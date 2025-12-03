@@ -20,4 +20,4 @@ Throughout this documentation, you'll find code examples demonstrating API usage
 - TypeScript
 - Python
 
-We've designed this documentation to provide you with a clear understanding of our API's capabilities and guide you through its implementation. Whether you're a seasoned developer or new to our platform, you'll find the information you need to successfully integrate HappyPathology's diagnostic power into your applications.
+We've designed this documentation to provide you with a clear understanding of our API's capabilities and guide you through its implementation. Whether you're a seasoned developer or new to our platform, you'll find the information you need to successfully integrate HappyPathology's power into your applications.

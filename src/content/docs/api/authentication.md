@@ -1,6 +1,7 @@
 ---
 title: Authentication
 description: Learn how to authenticate with the HappyPathology API.
+draft: true
 ---
 
 All authenticated calls to the HappyPathology API require an `Authorization` header containing a signed and valid token. There are two authentication methods available:

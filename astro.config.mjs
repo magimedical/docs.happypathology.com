@@ -22,7 +22,7 @@ export default defineConfig({
 					label: 'Overview',
 					items: [
 						{ label: 'Introduction', slug: 'introduction' },
-						{ label: 'Authentication', slug: 'api/authentication' },
+						// { label: 'Authentication', slug: 'api/authentication' },
 						{ label: 'HTTP Responses', slug: 'api/responses' },
 						{ label: 'Errors', slug: 'resources/errors' },
 					],
