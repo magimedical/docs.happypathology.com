@@ -6,6 +6,7 @@ import catppuccin from 'starlight-theme-catppuccin';
 
 // https://astro.build/config
 export default defineConfig({
+	site: 'https://docs.happypathology.com',
 	integrations: [
 		starlight({
 			title: 'HappyPathology Docs',
