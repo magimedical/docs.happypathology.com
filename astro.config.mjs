@@ -43,7 +43,7 @@ export default defineConfig({
 				{
 					label: 'Resources',
 					items: [
-						{ label: 'Sample Code', slug: 'resources/sample-code' },
+						// { label: 'Sample Code', slug: 'resources/sample-code' },
 					],
 				},
 			],
