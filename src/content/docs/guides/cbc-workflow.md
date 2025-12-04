@@ -1,34 +1,32 @@
 ---
-title: Peripheral Blood Smear (PBS) Detection Workflow
-description: Guide for submitting PBS images for detection.
+title: Complete Blood Count (CBC) Processing Workflow
+description: Guide for submitting CBC images for processing.
 ---
 
-This guide outlines the process of submitting microscopic images of peripheral blood samples and receiving diagnostic responses from HappyPathology.
+This guide outlines the process of submitting pictures or pdf files of CBC results or CBC machine printouts for processing.
 
 ## Overview
 
 The workflow consists of the following steps:
 
-1.  Create a new PBS study
-2.  Upload image files
-3.  Request a detection task
-4.  Wait for processing
-5.  Retrieve the detection report
+1.  Create a new "Source"
+2.  Wait for processing
+3.  Check for reports
 
 ## Detailed Workflow
 
-### 1. Create a New Study
+### 1. Create a New Source
 
-Create a study to obtain a Study ID (PBS-ID) for subsequent operations.
+Create a new source to obtain a Source ID (CBC-ID) for subsequent operations.
 
 #### HTTP Request
 
-`POST /pbs`
+`POST /v1/sources`
 
 ```shell
 # STEP 1: Create A New study
 echo '{"patient_proxy_id":"PPID12345","sample_id":"XYZ12345678","device_id":"SABCD"}' | \
-http -f POST https://in.api.happypathology.com/pbs \
+http -f POST https://in.api.happypathology.com/sources \
 'Authorization:HAPPYPATHOLOGY_AUTH_TOKEN'
 ```
 
@@ -38,7 +36,7 @@ http -f POST https://in.api.happypathology.com/pbs \
 {
   "status": 201,
   "results": {
-    "pbs_study_id": "c7d453a9-676d-4b9f-a505-8a9021b76dfd",
+    "cbc_study_id": "c7d453a9-676d-4b9f-a505-8a9021b76dfd",
     "tags": {
       "patient_proxy_id": "PPID12345",
       "sample_id":"XYZ12345678",
@@ -52,7 +50,7 @@ http -f POST https://in.api.happypathology.com/pbs \
 
 ### 2. Upload Image Files
 
-Upload images associated with the PBS study.
+Upload images associated with the CBC study.
 For each image, you are required to provide `rbc_diameter` parameter as a URL query param.
 `rbc_diameter` is the number of pixels in the diameter of a normal human Red Blood Cell in the image. This is a measure of magnification that includes digital and optical and sensor size related magnifications.
 You do NOT need to measure this for every image. You can do the measurements once and use the same number for all image prepared with the same device settings.

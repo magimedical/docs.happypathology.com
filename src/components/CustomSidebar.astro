@@ -1,0 +1,23 @@
+---
+import DefaultSidebar from '@astrojs/starlight/components/Sidebar.astro';
+import happyVersion from '../happyVersion';
+
+const version = new happyVersion().String();
+---
+
+<DefaultSidebar {...Astro.props}>
+  <slot />
+</DefaultSidebar>
+
+<div class="version-display">
+  <small>v{version}</small>
+</div>
+
+<style>
+  .version-display {
+    padding: 1rem;
+    border-top: 1px solid var(--sl-color-hairline);
+    text-align: center;
+    color: var(--sl-color-gray-3);
+  }
+</style>

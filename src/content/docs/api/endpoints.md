@@ -17,12 +17,13 @@ In addition to regional production endpoints, HappyPathology offers special-purp
 
 -   **URL**: `https://dev.api.happypathology.com`
 -   **Purpose**: Internal development and testing
--   **Access**: Requires developer credentials
+-   **Access**: Requires developer (dev) credentials
 -   **Important Notes**:
     -   Not HIPAA compliant
     -   Not suitable for production use
     -   Submitted information may be inspected by HappyPathology staff
     -   No privacy law protections apply
+    -   Please do not submit any sensitive or personal information to this endpoint
 
 ### Quality Assurance Endpoint (QA)
 
@@ -31,7 +32,6 @@ In addition to regional production endpoints, HappyPathology offers special-purp
 -   **Access**: Requires QA credentials
 -   **Use Case**: Run automated benchmarks before significant hardware or software changes that may affect output quality or clinical validity
 -   **Important Notes**:
-    -   Not HIPAA compliant
     -   Not suitable for production use
     -   Submitted information may be inspected by HappyPathology staff
     -   No privacy law protections apply

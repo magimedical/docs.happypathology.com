@@ -16,7 +16,7 @@ export default defineConfig({
 					light: 'latte-blue',
 				}),
 			],
-			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/happypathology/docs' }],
+			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/magimedical' }],
 			sidebar: [
 				{
 					label: 'Overview',
@@ -30,14 +30,14 @@ export default defineConfig({
 				{
 					label: 'API Reference',
 					items: [
-						{ label: 'Endpoints', slug: 'api/endpoints' },
+						// { label: 'Endpoints', slug: 'api/endpoints' },
 						{ label: 'Health Check', slug: 'api/health-check' },
 					],
 				},
 				{
 					label: 'Guides',
 					items: [
-						{ label: 'Detection Workflow', slug: 'guides/pbs-workflow' },
+						// { label: 'CBC Workflow', slug: 'guides/cbc-workflow' },
 					],
 				},
 				{
@@ -47,6 +47,9 @@ export default defineConfig({
 					],
 				},
 			],
+			components: {
+				Sidebar: './src/components/CustomSidebar.astro',
+			},
 		}),
 		react(),
 	],

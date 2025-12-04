@@ -6,7 +6,11 @@ description: How to check the API health status.
 If you need to check the health status of the HappyPathology API you can make a GET call to the heartbeat endpoint.
 
 ```shell
-http https://in.api.happypathology.com/heartbeat
+# curlie
+curlie https://api.happypathology.com/heartbeat
+
+# curl
+curl https://api.happypathology.com/heartbeat
 ```
 
 ```json
