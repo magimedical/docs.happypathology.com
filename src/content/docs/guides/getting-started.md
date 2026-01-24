@@ -9,46 +9,76 @@ This guide will help you get up and running quickly.
 
 ## Prerequisites
 
-Before you begin, ensure you have:
+Before you begin, you need:
 
-- A signing key pair for the dev and one for prod environment (contact support if you don't have one)
-- A basic understanding of REST APIs and how to make http requestes including setting headers
+- A signing key pair for the your development and one for youur production environments
+- Have a basic understanding of REST APIs and how to make http requestes including setting headers
 - A basic understanding of JWT (JSON Web Tokens) and how to sign them
-- A secure way to store your private key and access them from your application (for example AWS secrets manager, or GGP secrets manager)
+- A secure way to store your private key and access them from your application
 
 
 ## Recommended tools
 
+### Making HTTP calls
 To manually make API requests and experiment with the API, we recommend using one of the following tools:
 
-- [Insomnia](https://insomnia.rest/)
-- [curlie](https://curlie.dev/)
+- Insomnia: [https://insomnia.rest/](https://insomnia.rest/)
+- Bruno [https://www.usebruno.com/](https://www.usebruno.com/)
+- Curlie [https://curlie.dev/](https://curlie.dev/)
 
+#### Working JWTs
 To manually create or view and validate JWTs, we recommend using one of the following tools:
 
-- [jwt.io](https://jwt.io/)
+- JWT.io: [jwt.io](https://jwt.io/)
 
+You also need to user a JWT library, you can find a list of them in any language you work in here:
+
+- JWT Libraries: [https://www.jwt.io/libraries](https://www.jwt.io/libraries)
 
 ## How to create a signing key pair
 
 1. First generate the private keys (one for dev and one for prod) using the following command:
 ```bash
+# Generate Private keys
+
+# For your dev environment
 ssh-keygen -t rsa -b 4096 -m PEM -f dev-happypathology-jwtRS256.key
+
+# For your prod environment
 ssh-keygen -t rsa -b 4096 -m PEM -f prod-happypathology-jwtRS256.key
 ```
 
+[!NOTE]
+When asked to "Enter passphrase for ...", just press enter to skip it. DO NOT use a passphrase.
+
+
 2. Then generate the public keys (one for dev and one for prod) using the following command:
 ```bash
+# Generate Public keys
+
+# For your dev environment
 openssl rsa -in dev-happypathology-jwtRS256.key -pubout -outform PEM -out dev-happypathology-jwtRS256.key.pub
+
+# For your prod environment
 openssl rsa -in prod-happypathology-jwtRS256.key -pubout -outform PEM -out prod-happypathology-jwtRS256.key.pub
 ```
 
 3. Print the private key and public key to the console to visually verify that they look correct:
 ```bash
+# Print Private keys
+
+# For your dev environment
 cat dev-happypathology-jwtRS256.key
+
+# For your prod environment
+cat prod-happypathology-jwtRS256.key
+
+# Print Public keys
+
+# For your dev environment
 cat dev-happypathology-jwtRS256.key.pub
 
-cat prod-happypathology-jwtRS256.key
+# For your prod environment
 cat prod-happypathology-jwtRS256.key.pub
 ```
 
@@ -77,7 +107,14 @@ cat prod-happypathology-jwtRS256.key.pub | xclip -selection clipboard
 
 4. Store the private keys in a secure location (like paste it from the clipboard to AWS Console secrets manager or Google Cloud secrets manager)
 
+[!WARNING]
+Make sure to keep your private keys secure and never share them publicly, or commit them to your repo or store them in a database.
+
+
 5. Send the public keys to us via email or through the support chat.  As the name implies, the public key is public and does not need to be kept secret or treated as sensitive information.
+
+[!NOTE]
+It is completely okay to share the public key with us, and it is not a security risk. You can even share it publicly on your website or in your documentation.
 
 ## Sign a JWT
 
