@@ -18,15 +18,31 @@ export default defineConfig({
 			],
 			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/magimedical' }],
 			sidebar: [
-				{
-					label: 'Overview',
-					items: [
-						{ label: 'Introduction', slug: 'introduction' },
-						// { label: 'Authentication', slug: 'api/authentication' },
-						{ label: 'HTTP Responses', slug: 'api/responses' },
-						{ label: 'Errors', slug: 'resources/errors' },
-					],
-				},
+				 {
+				 	label: 'Guides',
+				 	items: [
+				 		{ label: 'Getting Started', slug: 'guides/getting-started' },
+						{ label: 'Check Connectivity', slug: 'guides/check-connectivity' },
+						{ label: 'Auth Model', slug: 'guides/auth-model' },
+						{ label: 'Create Signing Key Pairs', slug: 'guides/create-signing-key-pairs' },
+						{ label: 'Signing JWTs', slug: 'guides/signing-jwts' },
+						{ label: 'Verifying JWTs', slug: 'guides/verifying-jwts' },
+						{ label: 'Make Authenticated Calls', slug: 'guides/make-authenticated-calls' },
+						{ label: 'Data Model', slug: 'guides/data-model' },
+
+				 		// { label: 'CBC Workflow', slug: 'guides/cbc-workflow' },
+				 	],
+				 },
+				// {
+				// 	label: 'Overview',
+				// 	items: [
+				// 		{ label: 'Getting Started', slug: 'guides/getting-started' },
+				// 		// { label: 'Introduction', slug: 'introduction' },
+				// 		// { label: 'Authentication', slug: 'api/authentication' },
+				// 		{ label: 'HTTP Responses', slug: 'api/responses' },
+				// 		{ label: 'Errors', slug: 'resources/errors' },
+				// 	],
+				// },
 				{
 					label: 'API Reference',
 					items: [
@@ -35,15 +51,10 @@ export default defineConfig({
 					],
 				},
 				{
-					label: 'Guides',
-					items: [
-						// { label: 'CBC Workflow', slug: 'guides/cbc-workflow' },
-					],
-				},
-				{
 					label: 'Resources',
 					items: [
-						// { label: 'Sample Code', slug: 'resources/sample-code' },
+						{ label: 'Status Page', slug: 'resources/status-page' },
+						{ label: 'Sample Code', slug: 'resources/sample-code' },
 					],
 				},
 			],

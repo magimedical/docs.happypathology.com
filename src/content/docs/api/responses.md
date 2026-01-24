@@ -8,7 +8,9 @@ The HappyPathology API typically returns responses in JSON format. The standard 
 ```json
 {
   "status": 202,
-  "results": {},
+  "results": {
+    // The main output of the API call
+  },
   "error": "Error message, if applicable",
   "user_message": "",
   "debug_info": {
@@ -49,3 +51,5 @@ When an error occurs, the `error` field will contain a descriptive message to he
 The `debug_info` object contains additional technical details that can be valuable for troubleshooting issues with your API integration. This information is primarily intended for developers and should not be displayed to end users.
 
 > **Note**: For security reasons, authentication-related debugging information is handled separately. Please refer to the Auth section of this documentation for details on debugging authentication issues.
+
+> **Note**: The `debug_info` object is optional and may not be present in all responses. It may contain different fields depending on the endpoint and other factors.
