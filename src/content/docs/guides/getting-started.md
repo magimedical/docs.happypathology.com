@@ -84,7 +84,7 @@ cat prod-happypathology-jwtRS256.key.pub
 
 or copy them to clipboard safely (without changing the line breaks or whitespace) using the following command:
 ```bash
-# on macOS on at a time
+# on macOS one at a time
 cat dev-happypathology-jwtRS256.key | pbcopy
 # now paste it to AWS Console secrets manager or Google Cloud secrets manager for your DEV environment
 cat dev-happypathology-jwtRS256.key.pub | pbcopy
@@ -109,6 +109,8 @@ cat prod-happypathology-jwtRS256.key.pub | xclip -selection clipboard
 
 [!WARNING]
 Make sure to keep your private keys secure and never share them publicly, or commit them to your repo or store them in a database.
+If you are using a cloud provider like AWS or Google Cloud, you can store the private keys in their secret manager service.
+If you have to deploy your private key as a file in your application, make sure to set the file permissions to be readable only by the owner and make sure they are not in a directory that is publicly accessible or served by your web server.
 
 
 5. Send the public keys to us via email or through the support chat.  As the name implies, the public key is public and does not need to be kept secret or treated as sensitive information.
@@ -131,7 +133,7 @@ To sign the JWT you need:
 6. expiration time (you can set it to 1 hour or less)
 7. issued at (current time)
 
-for example if you are using Go, you can use the [jwx](https://github.com/lestrrat-go/jwx) library.
+For example, if you are using Go, you can use the [jwx](https://github.com/lestrrat-go/jwx) library.
 
 ```go
 package main
@@ -331,6 +333,8 @@ curlie POST https://dev.api.happypathology.com/auth/hello "Authorization:Bearer 
 # or using curl
 curl -X POST https://dev.api.happypathology.com/auth/hello -H "Authorization:Bearer $YOUR_SIGNED_TOKEN"
 ```
+
+You will see a response similar to the following:
 
 ```json
 {
