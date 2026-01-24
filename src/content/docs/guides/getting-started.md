@@ -11,8 +11,8 @@ This guide will help you get up and running quickly.
 
 Before you begin, you need:
 
-- A signing key pair for the your development and one for youur production environments
-- Have a basic understanding of REST APIs and how to make http requestes including setting headers
+- A signing key pair for your development and one for your production environment
+- Have a basic understanding of REST APIs and how to make HTTP requests including setting headers
 - A basic understanding of JWT (JSON Web Tokens) and how to sign them
 - A secure way to store your private key and access them from your application
 
@@ -26,12 +26,12 @@ To manually make API requests and experiment with the API, we recommend using on
 - Bruno [https://www.usebruno.com/](https://www.usebruno.com/)
 - Curlie [https://curlie.dev/](https://curlie.dev/)
 
-#### Working JWTs
+#### Working with JWTs
 To manually create or view and validate JWTs, we recommend using one of the following tools:
 
 - JWT.io: [jwt.io](https://jwt.io/)
 
-You also need to user a JWT library, you can find a list of them in any language you work in here:
+You also need to use a JWT library, you can find a list of them in any language you work in here:
 
 - JWT Libraries: [https://www.jwt.io/libraries](https://www.jwt.io/libraries)
 
@@ -42,10 +42,10 @@ You also need to user a JWT library, you can find a list of them in any language
 # Generate Private keys
 
 # For your dev environment
-ssh-keygen -t rsa -b 4096 -m PEM -f dev-happypathology-jwtRS256.key
+ssh-keygen -t rsa -b 4096 -m PEM -f dev-happypathology-jwtRS256.key -N ""
 
 # For your prod environment
-ssh-keygen -t rsa -b 4096 -m PEM -f prod-happypathology-jwtRS256.key
+ssh-keygen -t rsa -b 4096 -m PEM -f prod-happypathology-jwtRS256.key -N ""
 ```
 
 [!NOTE]
@@ -131,66 +131,138 @@ To sign the JWT you need:
 6. expiration time (you can set it to 1 hour or less)
 7. issued at (current time)
 
-for exmple if you are using Go, you can use the [jwx](https://github.com/lestrrat-go/jwx) library.
+for example if you are using Go, you can use the [jwx](https://github.com/lestrrat-go/jwx) library.
 
 ```go
 package main
 
 import (
-    "crypto/x509"
-    "encoding/pem"
-    "fmt"
-    "io/ioutil"
-    "log"
-    "math/rand"
-    "os"
-    "time"
+	"crypto/x509"
+	"encoding/pem"
+	"fmt"
+	"io/ioutil"
+	"log"
+	"time"
 
-    "github.com/lestrrat-go/jwx/jwa"
-    "github.com/lestrrat-go/jwx/jwk"
-    "github.com/lestrrat-go/jwx/jwt"
+	"github.com/lestrrat-go/jwx/jwa"
+	"github.com/lestrrat-go/jwx/jwk"
+	"github.com/lestrrat-go/jwx/jwt"
 )
+
+func main() {
+	token := generateAuthToken()
+	fmt.Println(token)
+}
 
 // V1 example
 func generateAuthToken() string {
-    _PRIVATE_KEY_, err := ioutil.ReadFile("dev-happypathology-jwtRS256.key")
-    if err != nil {
-        log.Fatal(err)
-    }
+	_PRIVATE_KEY_, err := ioutil.ReadFile("dev-happypathology-jwtRS256.key")
+	if err != nil {
+		log.Fatal(err)
+	}
 
-    // create a new jwt
-    issued := time.Now()
-    exp := time.Now().Add(time.Hour)
-    j := jwt.NewBuilder()
-    j.Audience([]string{"api.happypathology.com"})
-    j.Expiration(exp)
-    j.IssuedAt(issued)
-    j.Issuer("Your Organization ID")
-    j.JwtID(fmt.Sprintf("%d", time.Now().UnixNano()))
-    j.Subject("Your User ID")
-    j.Claim("kid", "Your Key ID")
+	// create a new jwt
+	issued := time.Now()
+	exp := time.Now().Add(time.Hour)
+	j := jwt.NewBuilder()
+	j.Audience([]string{"api.happypathology.com"})
+	j.Expiration(exp)
+	j.IssuedAt(issued)
+	j.Issuer("Your Organization ID")
+	j.JwtID(fmt.Sprintf("%d", time.Now().UnixNano()))
+	j.Subject("Your User ID")
+	j.Claim("kid", "Your Key ID")
 
-    token, err := j.Build()
-    if err != nil {
-        log.Fatal(err)
-    }
-    block, _ := pem.Decode(_PRIVATE_KEY_)
-    key, err := x509.ParsePKCS1PrivateKey(block.Bytes)
-    if err != nil {
-        log.Fatalf("%v", err)
-    }
+	token, err := j.Build()
+	if err != nil {
+		log.Fatal(err)
+	}
+	block, _ := pem.Decode(_PRIVATE_KEY_)
+	key, err := x509.ParsePKCS1PrivateKey(block.Bytes)
+	if err != nil {
+		log.Fatalf("%v", err)
+	}
 
-    kk, err := jwk.New(key)
-    if err != nil {
-        log.Fatal(err)
-    }
-    signedT, err := jwt.Sign(token, jwa.RS256, kk)
-    if err != nil {
-        log.Fatal(err)
-    }
-    return string(signedT)
+	kk, err := jwk.New(key)
+	if err != nil {
+		log.Fatal(err)
+	}
+	signedT, err := jwt.Sign(token, jwa.RS256, kk)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return string(signedT)
 }
+
 ```
+
+or in python
+
+```python
+# you can use this pyproject.toml file to install the required dependencies
+# [project]
+# name = "test-docs"
+# version = "0.1.0"
+# description = "Add your description here"
+# readme = "README.md"
+# requires-python = ">=3.12"
+# dependencies = [
+#     "PyJWT>=2.8.0",
+#     "cryptography>=41.0.0",
+# ]
+#
+
+import time
+import datetime
+from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.backends import default_backend
+import jwt
+
+def main():
+    token = generate_auth_token()
+    print(token)
+
+def generate_auth_token():
+    # Read the private key file
+    with open("dev-happypathology-jwtRS256.key", "rb") as key_file:
+        private_key_data = key_file.read()
+
+    # Parse the private key
+    private_key = serialization.load_pem_private_key(
+        private_key_data,
+        password=None,
+        backend=default_backend()
+    )
+
+    # Create JWT claims
+    issued = datetime.datetime.now(datetime.UTC)
+    exp = issued + datetime.timedelta(hours=1)
+
+    payload = {
+        "aud": "api.happypathology.com",  # audience
+        "exp": exp,                        # expiration time
+        "iat": issued,                     # issued at
+        "iss": "Your Organization ID",     # issuer
+        "jti": str(time.time_ns()),        # JWT ID (nanoseconds timestamp)
+        "sub": "Your User ID",             # subject
+        "kid": "Your Key ID"               # key ID (custom claim)
+    }
+
+    # Sign the token with RS256 algorithm
+    token = jwt.encode(
+        payload,
+        private_key,
+        algorithm="RS256",
+        headers={"kid": "Your Key ID"}  # kid is typically in the header
+    )
+
+    return token
+
+if __name__ == "__main__":
+    main()
+
+```
+
 
 
 ## Connectivity
@@ -238,7 +310,7 @@ This is the shape of all responses from the API that return a json response.
 ## Authentication
 
 All authenticated API requests require an Authorization header to be included in the request.
-The Authorization header should be in the format `Bearer SIGNED_JWT`.
+The Authorization header should be in the format `Bearer YOUR_SIGNED_JWT`.
 
 The SIGNED_JWT should be generated using the private key of the signing key pair.
 
@@ -249,10 +321,15 @@ Before you can make requests, you must have already shared your public key with 
 Here is a simple example to verify your connectivity:
 
 ```bash
+# first store your freshly signed token in a variable
+export YOUR_SIGNED_TOKEN=$(python main.py)
+
+# then use it in your request
 # curlie
-curlie POST https://dev.api.happypathology.com/auth/hello "Authorization:Bearer eyJhbGciOiJS ...."
-# curl
-curl https://api.happypathology.com/v1/auth/hello -H "Authorization:Bearer SIGNED_JWT"
+curlie POST https://dev.api.happypathology.com/auth/hello "Authorization:Bearer $YOUR_SIGNED_TOKEN"
+
+# or using curl
+curl -X POST https://dev.api.happypathology.com/auth/hello -H "Authorization:Bearer $YOUR_SIGNED_TOKEN"
 ```
 
 ```json
