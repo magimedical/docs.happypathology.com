@@ -82,6 +82,3 @@ If you have to deploy your private key as a file in your application, make sure 
 
 
 5. Send the public keys to us via email or through the support chat.  As the name implies, the public key is public and does not need to be kept secret or treated as sensitive information.
-
-**Note**
-It is completely okay to share the public key with us, and it is not a security risk. You can even share it publicly on your website or in your documentation.
