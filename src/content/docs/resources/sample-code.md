@@ -115,7 +115,7 @@ type postFileAPIResponse struct {
     Status int `json:"status,omitempty"`
 }
 
-type getRerportResponse struct {
+type getReportResponse struct {
     Status  int `json:"status,omitempty"`
     Results struct {
         PBSStudyID string `json:"pbs_study_id,omitempty"`
@@ -343,7 +343,7 @@ func process(pictureFullPath string, rbcDiameter float64) (Result, error) {
     if err != nil {
         return results, fmt.Errorf("error reading response body when getting report for study %s err %v", PBSStudyID, err)
     }
-    var reportResults getRerportResponse
+    var reportResults getReportResponse
     err = json.Unmarshal(body, &reportResults)
     if err != nil {
         return results, fmt.Errorf("error parsing response to report request %v", err)
