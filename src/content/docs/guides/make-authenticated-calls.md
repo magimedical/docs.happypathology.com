@@ -14,10 +14,10 @@ export YOUR_SIGNED_TOKEN=$(python main.py)
 
 # then use it in your request
 # curlie
-curlie POST https://dev.api.happypathology.com/auth/hello "Authorization:Bearer $YOUR_SIGNED_TOKEN"
+curlie POST https://api.happypathology.com/auth/hello "Authorization:Bearer $YOUR_SIGNED_TOKEN"
 
 # or using curl
-curl -X POST https://dev.api.happypathology.com/auth/hello -H "Authorization:Bearer $YOUR_SIGNED_TOKEN"
+curl -X POST https://api.happypathology.com/auth/hello -H "Authorization:Bearer $YOUR_SIGNED_TOKEN"
 ```
 
 You will see a response similar to the following:

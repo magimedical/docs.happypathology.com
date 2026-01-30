@@ -54,7 +54,7 @@ export default defineConfig({
 					label: 'Resources',
 					items: [
 						{ label: 'Status Page', slug: 'resources/status-page' },
-						{ label: 'Sample Code', slug: 'resources/sample-code' },
+						// { label: 'Sample Code', slug: 'resources/sample-code' },
 					],
 				},
 			],

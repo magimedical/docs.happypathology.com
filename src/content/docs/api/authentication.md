@@ -163,5 +163,5 @@ cat jwtRS256.key.pub
 -   Use the `/auth/hello` endpoint for detailed JWT information and potential rejection reasons.
 
 ```shell
-http -f POST https://dev.api.happypathology.com/auth/hello Authorization:HAPPYPATHOLOGY_AUTH_TOKEN
+http -f POST https://api.happypathology.com/auth/hello Authorization:HAPPYPATHOLOGY_AUTH_TOKEN
 ```

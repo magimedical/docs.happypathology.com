@@ -12,12 +12,12 @@ To sign a JWT aka Auth token, you need the following information:
 ### Required Information
 
 **You create these yourself:**
-- Your **Private Key** (for the corresponding environment, dev or prod)
+- Your **Private Key**
 
 **We provide you with:**
 - Your **Organization ID** (you will receive this when you share your public key with us)
 - Your **Key ID** (you will receive this when you share your public key with us)
-- **Audience** (api.happypathology.com) on both dev and prod environments it is the same
+- **Audience** `api.happypathology.com`
 
 **User information:**
 - **User ID** (you can use any string that identifies the user)
@@ -28,7 +28,7 @@ To sign a JWT aka Auth token, you need the following information:
 
 
 
-To sign a JWT, you will use your private key (for the corresponding environment, dev or prod).
+To sign a JWT, you will use your private key
 It is best if you use a JWT library for your programming language of choice.
 You can find a list of JWT libraries for your programming language of choice on the [JWT.io](https://jwt.io/libraries) website.
 

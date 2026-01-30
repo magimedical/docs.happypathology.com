@@ -11,7 +11,7 @@ This guide will help you get up and running quickly.
 
 Before you begin, you need:
 
-- A signing key pair for your development and one for your production environment
+- A signing key pair
 - Have a basic understanding of REST APIs and how to make HTTP requests including setting headers
 - A basic understanding of JWT (JSON Web Tokens) and how to sign them
 - A secure way to store your private key and access them from your application

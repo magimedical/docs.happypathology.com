@@ -73,7 +73,7 @@ var pathToTheDatasetDefinitionJSON = "./dataset_definition.json"
 var datasetRootPath = "../../../BloodSamples/MalariaDataset"
 var serviceRootPath = "https://in.api.happypathology.com"
 
-var authAudience = "dev.api.happypathology.com"
+var authAudience = "api.happypathology.com"
 var authIssuer = "Miriam_Technologies_org_id"
 var keyID = "vkzzmyxhli"
 var privateKeyFilePath = "miriam_private.key"
