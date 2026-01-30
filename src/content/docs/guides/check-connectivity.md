@@ -26,11 +26,11 @@ You will see a response similar to the following:
         "request_timestamp": 1764725619,
         "status": 200,
         "user-agent": "curl/8.7.1",
-        "version": "happy_api.386.explicit-impersonation-request-check.f6b326f"
+        "version": "happy_api.386.main.f6b326f"
     },
     "debug_info": {
         "delta": "30.643443ms",
-        "version": "happy_api.386.explicit-impersonation-request-check.f6b326f"
+        "version": "happy_api.386.main.f6b326f"
     }
 }
 ```

@@ -30,7 +30,7 @@ You will see a response similar to the following:
     },
     "debug_info": {
         "delta": "54.156211ms",
-        "version": "happy_api.386.explicit-impersonation-request-check.f6b326f"
+        "version": "happy_api.386.main.f6b326f"
     }
 }
 ```
