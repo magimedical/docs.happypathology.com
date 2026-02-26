@@ -28,6 +28,7 @@ export default defineConfig({
 						{ label: 'Signing JWTs', slug: 'guides/signing-jwts' },
 						{ label: 'Verifying JWTs', slug: 'guides/verifying-jwts' },
 						{ label: 'Make Authenticated Calls', slug: 'guides/make-authenticated-calls' },
+						{ label: 'Document Workflow', slug: 'guides/document-workflow' },
 						// { label: 'Data Model', slug: 'guides/data-model' },
 
 				 		// { label: 'CBC Workflow', slug: 'guides/cbc-workflow' },
