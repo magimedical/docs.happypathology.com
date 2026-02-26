@@ -13,10 +13,6 @@ Here is a simple example to verify your connectivity:
 export YOUR_SIGNED_TOKEN=$(python main.py)
 
 # then use it in your request
-# curlie
-curlie POST https://api.happypathology.com/auth/hello "Authorization:Bearer $YOUR_SIGNED_TOKEN"
-
-# or using curl
 curl -X POST https://api.happypathology.com/auth/hello -H "Authorization:Bearer $YOUR_SIGNED_TOKEN"
 ```
 

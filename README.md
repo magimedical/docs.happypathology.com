@@ -1,6 +1,6 @@
-# Happy Pathology API documentation
+# HappyPathology API documentation
 
-Happy Pathology Offers workflow automation API for medical and laboratory workflows.
+HappyPathology Offers workflow automation API for medical and laboratory workflows.
 
 
 Please visit [https://docs.happypathology.com](https://docs.happypathology.com) to learn more.

@@ -61,9 +61,9 @@ cat happypathology-jwtRS256.key | xclip -selection clipboard
 ```bash
 # on macos
 cat happypathology-jwtRS256.key.pub | pbcopy
-# send your public key to your happy pathology contact's email
+# send your public key to your happypathology contact's email
 
 # or on Linux
 cat happypathology-jwtRS256.key.pub | xclip -selection clipboard
-# send you public key to your happy pathology contact's email
+# send you public key to your happypathology contact's email
 ```

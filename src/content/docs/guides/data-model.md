@@ -38,19 +38,17 @@ Returned inside `results.upload_urls` when creating a source. Each entry corresp
 | Field | Type | Description |
 |---|---|---|
 | `url` | `string` | Signed GCS URL — PUT your file here directly |
-| `object_name` | `string` | GCS object path, used internally to identify the file |
 | `file_name` | `string` | The original file name you provided |
 
 ```json
 {
     "url": "https://storage.googleapis.com/...",
-    "object_name": "images/01KJDHXSC5B768KG1Q7BM54K4E/SOURCE_FILES/01KJDHXSC5B768KG1Q7BM54K4E_1",
     "file_name": "PatientCases.pdf"
 }
 ```
 
 :::caution
-Upload URLs expire after a few minutes. Upload immediately after receiving them.
+Upload URLs expire after five minutes.
 :::
 
 ---
@@ -62,15 +60,12 @@ Represents a batch of uploaded files being processed into cases.
 | Field | Type | Description |
 |---|---|---|
 | `id` | `string` | Source ID — reference this when polling status and in Step 4 |
-| `status` | `string` | Current processing state (see below) |
+| `status` | `string` | Current processing state (this is NOT the http status code) |
 | `expected_file_count` | `number` | Number of files declared when the source was created |
 | `uploaded_file_count` | `number` | Number of files received so far |
-| `file_names` | `string[]` | GCS object paths of received files |
-| `original_file_names` | `object` | Map of GCS object path → original file name |
-| `case_ids` | `string[] \| null` | IDs of extracted cases — populated when `status` is `complete` |
+| `case_ids` | `string[]` or `null` | IDs of extracted cases — populated when `status` is `complete` |
 | `created_timestamp` | `number` | Unix nanoseconds |
 | `updated_timestamp` | `number` | Unix nanoseconds |
-| `expiration_unix_time` | `number` | Unix seconds — source data is deleted after this time |
 | `account_id` | `string` | Your account ID |
 
 ### Source status
@@ -80,6 +75,7 @@ Represents a batch of uploaded files being processed into cases.
 | `pending_upload` | Waiting for files to arrive |
 | `processing` | Files received, cases being extracted |
 | `complete` | Extraction done — `case_ids` is populated |
+| `failed` | Processing failed, you need to start over |
 
 ---
 
@@ -92,9 +88,7 @@ Represents a single patient's case extracted from a source document. One source 
 | `id` | `string` | Case ID |
 | `source_id` | `string` | The source this case was extracted from |
 | `account_id` | `string` | Your account ID |
-| `status` | `string` | `complete` when extraction is finished |
-| `case_name` | `string` | Auto-generated name derived from patient demographics |
-| `custom_case_name` | `string` | User-defined name (empty if not set) |
+| `status` | `string` | Current processing state (this is NOT the http status code) |
 | `created_timestamp` | `number` | Unix nanoseconds |
 | `updated_timestamp` | `number` | Unix nanoseconds |
 
@@ -104,21 +98,29 @@ The full case contents, including extracted medical data, are returned by the `/
 
 ## Medical Document
 
-Each entry in `results.medical_data` from the extract endpoint is a medical document representing one CBC panel found in the source file. It contains patient demographics alongside all CBC markers.
+The following is a list of all available fields that HappyPathology can extract from a document.
 
-### Demographics
+For each field the values can be in either of the following formats:
+
+- `string`
+- `number` (this is always an int64)
+- Medical Test of format `{ "value" : number , "measurement_unit" : string, "range" : { "min" : number, "max" : number }}`
+
+
+:::caution
+This list is work in progress and is not comprehensive.
+:::
+
 
 | Field | Type | Description |
 |---|---|---|
 | `patient_first_name` | `string` | |
 | `patient_last_name` | `string` | |
 | `patient_mrn` | `string` | Medical record number |
-| `patient_dob` | `string` | Date of birth, e.g. `"7/20/1978"` |
+| `patient_dob` | `string` | Date of birth, e.g. `"1/2/2026"` |
 | `specimen_reported_date` | `number` | Unix seconds |
 
-### CBC markers
 
-Each CBC marker is a [Lab Result](#lab-result) object.
 
 | Field | Typical unit |
 |---|---|

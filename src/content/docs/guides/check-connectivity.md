@@ -9,9 +9,6 @@ description: Verify your connection to the HappyPathology API.
 To verify your connectivity, you can make a GET request to the `/heartbeat` endpoint.
 
 ```bash
-# using curlie
-curlie https://api.happypathology.com/heartbeat
-# or using curl
 curl https://api.happypathology.com/heartbeat
 ```
 

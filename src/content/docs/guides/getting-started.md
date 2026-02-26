@@ -24,7 +24,7 @@ To manually make API requests and experiment with the API, we recommend using on
 
 - Insomnia: [https://insomnia.rest/](https://insomnia.rest/)
 - Bruno [https://www.usebruno.com/](https://www.usebruno.com/)
-- Curlie [https://curlie.dev/](https://curlie.dev/)
+- curl [https://curl.se/](https://curl.se/)
 
 #### Working with JWTs
 To manually create or view and validate JWTs, we recommend using one of the following tools:

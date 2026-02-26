@@ -3,33 +3,34 @@ title: Document Workflow
 description: How to upload documents and retrieve extracted medical data.
 ---
 
-Once you can make authenticated calls, the document workflow lets you upload patient case PDFs and retrieve structured medical data extracted from them.
+HappyPathology processes images and extracts structured medical data from them.
+
+The following file types may be uploaded:
+
+- PDF: `application/pdf`
+- JPEG: `image/jpeg`
+- PNG: `image/png`
+
+
+(PDF only) HappyPathology is able to detect if a pdf document contains multiple cases.
+This feature requires the pdf document to include a specific HappyPathology separator page between each case. Please contact us to get a printable copy of the separator page.
+
+
+
+### Summary
 
 The workflow has four steps:
 
-1. **Create a source** — register the files you intend to upload and receive signed upload URLs
-2. **Upload the files** — PUT each file directly to Google Cloud Storage
-3. **Poll the source** — wait for processing to complete and collect the resulting case IDs
-4. **Retrieve case data** — poll each case until extraction is complete and read the structured results
+1. **Create a Source** — register the files you intend to upload. This will create a source and return a list of signed urls. Sources represent one or more files that will be processed.
+2. **Upload the Files** — PUT each file directly to Google Cloud Storage using the source's signed urls from Step 1.
+3. **Poll the Source** — wait for the source's contents to be ready for processing. When ready, this will return a list of case IDs.
+4. **Retrieve Case Data** — poll each case id, until extraction is complete, and read the structured results.
 
 ---
 
-## Step 1: Create a source
+## Step 1: Create a Source
 
 Make a `POST` request to `/v1/source` with the list of files you want to upload.
-
-```bash
-# curlie
-curlie POST https://api.happypathology.com/v1/source \
-  "Authorization:Bearer $YOUR_SIGNED_TOKEN" \
-  files:='[{"content_type":"application/pdf","file_name":"PatientCases.pdf"}]'
-
-# or using curl
-curl -X POST https://api.happypathology.com/v1/source \
-  -H "Authorization: Bearer $YOUR_SIGNED_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"files":[{"content_type":"application/pdf","file_name":"PatientCases.pdf"}]}'
-```
 
 The request body should look like this:
 
@@ -42,6 +43,23 @@ The request body should look like this:
     }
   ]
 }
+```
+
+Example usage using curl:
+
+
+```bash
+RESPONSE=$(curl -s -X POST https://api.happypathology.com/v1/source \
+  -H "Authorization: Bearer $YOUR_SIGNED_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"files":[{"content_type":"application/pdf","file_name":"PatientCases.pdf"}]}')
+
+# Extract the source ID and first upload URL
+SOURCE_ID=$(echo "$RESPONSE" | jq -r '.results.id')
+UPLOAD_URL=$(echo "$RESPONSE" | jq -r '.results.upload_urls[0].url')
+
+echo "Source ID: $SOURCE_ID"
+echo "Upload URL: $UPLOAD_URL"
 ```
 
 The response contains two things you need to hold on to:
@@ -70,8 +88,9 @@ The response contains two things you need to hold on to:
 ```
 
 :::caution
-The signed upload URLs expire after a few minutes. Proceed to Step 2 immediately.
+The signed upload URLs expire after five minutes.
 :::
+
 
 ---
 
@@ -79,6 +98,15 @@ The signed upload URLs expire after a few minutes. Proceed to Step 2 immediately
 
 For each entry in `upload_urls`, PUT the corresponding file directly to Google Cloud Storage using the signed URL. This request goes to GCS — not to the HappyPathology API — so no `Authorization` header is needed.
 
+Example usage using curl, if you captured `$UPLOAD_URL` in Step 1:
+
+```bash
+curl -X PUT "$UPLOAD_URL" \
+  -H "Content-Type: application/pdf" \
+  --data-binary @PatientCases.pdf
+```
+
+Example usage using TypeScript:
 ```typescript
 const uploadFileToGCS = async (
   signedUrl: string,
@@ -102,12 +130,10 @@ A `200` response means the upload succeeded. If you receive any other status, re
 
 ## Step 3: Poll the source for case IDs
 
-After uploading, poll `GET /v1/source/{SOURCE_ID}` periodically until `results.status` is `"complete"`.
+After uploading, poll `GET /v1/source/{SOURCE_ID}` periodically.
 
-```bash
-curlie https://api.happypathology.com/v1/source/01KJDHXSC5B768KG1Q7BM54K4E \
-  "Authorization:Bearer $YOUR_SIGNED_TOKEN"
-```
+The response body will have a field named `results.status`.
+Keep polling until `results.status` is `complete` or `failed`.
 
 The `status` field moves through these values:
 
@@ -116,6 +142,17 @@ The `status` field moves through these values:
 | `pending_upload` | Waiting for files to arrive in GCS |
 | `processing` | Files received, extraction in progress |
 | `complete` | All cases extracted, `case_ids` is populated |
+| `failed` | Processing failed, you need to start over |
+
+
+Example usage using curl:
+```bash
+curl https://api.happypathology.com/v1/source/$SOURCE_ID \
+  -H "Authorization: Bearer $YOUR_SIGNED_TOKEN"
+```
+
+
+### Example responses
 
 **`pending_upload`** — no files have been received yet:
 
@@ -166,20 +203,53 @@ The `status` field moves through these values:
 }
 ```
 
-Once `status` is `"complete"`, collect the `case_ids` array and move on to Step 4.
+
+**`failed`** - there was an internal error and processing failed. In this case, you need to start from step 1 again.
+
+```json
+{
+    "status": 200,
+    "results": {
+        "id": "01KJDHXSC5B768KG1Q7BM54K4E",
+        "status": "failed",
+        "expected_file_count": 1,
+        "uploaded_file_count": 1,
+        "case_ids": null
+    },
+}
+```
+
+Once `status` is `"complete"`, store the case IDs and move on to Step 4:
+
+
+Example usage using curl:
+
+```bash
+SOURCE_RESPONSE=$(curl -s https://api.happypathology.com/v1/source/$SOURCE_ID \
+  -H "Authorization: Bearer $YOUR_SIGNED_TOKEN")
+
+# Extract all case IDs as a JSON array
+CASE_IDS=$(echo "$SOURCE_RESPONSE" | jq -r '.results.case_ids')
+
+# Or extract a single case ID by index
+CASE_ID=$(echo "$SOURCE_RESPONSE" | jq -r '.results.case_ids[0]')
+```
 
 ---
 
 ## Step 4: Retrieve extracted case data
 
-For each case ID, poll `GET /v1/patient_case/{CASE_ID}/extract` until the response status is `200`.
+For each case ID, poll `GET /v1/patient_case/{CASE_ID}/extract` until the http response status is `200`.
 
+While the case is being processed, the API returns http status `204 No Content` with an empty body.
+Keep polling until you receive a http status `200 OK`.
+
+
+Example usage using curl:
 ```bash
-curlie https://api.happypathology.com/v1/patient_case/01KJDHYF3GR99Y7CDGC27K1EGP/extract \
-  "Authorization:Bearer $YOUR_SIGNED_TOKEN"
+curl https://api.happypathology.com/v1/patient_case/$CASE_ID/extract \
+  -H "Authorization: Bearer $YOUR_SIGNED_TOKEN"
 ```
-
-While the case is still being processed, the API returns `204 No Content` with an empty body. Keep polling until you receive a `200`.
 
 When ready, the response contains the structured medical data under `results.medical_data`:
 
@@ -191,13 +261,12 @@ When ready, the response contains the structured medical data under `results.med
         "id": "01KJDHYF3GR99Y7CDGC27K1EGP",
         "source_id": "01KJDHXSC5B768KG1Q7BM54K4E",
         "case_name": "Patient 8239534 Ali Moeeny DOB:7/20/1978",
-        "medical_data": [
-            {},
-            {
+        "medical_data": {
+          "01KJE278B2856XBQTF2ED1TSH2":  {
                 "patient_first_name": "Ali",
                 "patient_last_name": "Moeeny",
-                "patient_mrn": "8239534",
-                "patient_dob": "7/20/1978",
+                "patient_mrn": "123456",
+                "patient_dob": "1/2/2026",
                 "wbc_count": {
                     "value": 10.14,
                     "measurement_unit": "K/uL",
@@ -208,8 +277,19 @@ When ready, the response contains the structured medical data under `results.med
                     "measurement_unit": "g/dL",
                     "range": { "min": 13.5, "max": 17.5 }
                 }
+            },
+            "01KJE2A53GH8T2B9KW43NR4E4V":  {
+                "patient_first_name": "Ali",
+                "patient_last_name": "Moeeny",
+                "patient_mrn": "123456",
+                "patient_dob": "3/4/2026",
+                "wbc_count": {
+                    "value": 7.12,
+                    "measurement_unit": "K/uL",
+                    "range": { "min": 4, "max": 11 }
+                }
             }
-        ]
+        },
     },
     "debug_info": {
         "delta": "1.007220824s",
@@ -218,4 +298,15 @@ When ready, the response contains the structured medical data under `results.med
 }
 ```
 
-Each entry in `medical_data` corresponds to one CBC panel extracted from the source document. Patient demographics (`patient_first_name`, `patient_last_name`, `patient_mrn`, `patient_dob`) and all CBC markers are included alongside their reference ranges.
+
+### Extracted Data (medical_data)
+
+When HappyPathology processes a case's files, it organizes the pages into distinct documents.
+For example a document can be:
+- a multipage cbc lab report from Dec 1, 2021.
+- a multipage cbc lab report from Feb 2, 2026.
+- a packet that contains patient medical history.
+- an order form sent to the lab.
+
+Each document is processed and HappyPathology returns the structured data under `medical_data`.
+
