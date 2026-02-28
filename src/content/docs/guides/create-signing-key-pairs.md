@@ -43,17 +43,7 @@ If you are using a cloud provider like AWS or Google Cloud, you can store the pr
 If you have to deploy your private key as a file in your application, make sure to set the file permissions to be readable only by the owner and make sure they are not in a directory that is publicly accessible or served by your web server.
 
 It is important to make sure the whitespaces do not change during this process. You can use the following commands to copy the private key to clipboard safely (without changing the line breaks or whitespace):
-```bash
-# on macOS
-cat happypathology-jwtRS256.key | pbcopy
-# now paste your private key to AWS Console secrets manager or Google Cloud secrets manager
 
-
-# or on Linux
-cat happypathology-jwtRS256.key | xclip -selection clipboard
-# now paste your private key to AWS Console secrets manager or Google Cloud secrets manager
-
-```
 
 
 5. Send the public keys to us via email or through the support chat.  As the name implies, the public key is public and does not need to be kept secret or treated as sensitive information.
