@@ -18,8 +18,6 @@ To sign a JWT aka Auth token, you need the following information:
 - Your **Organization ID** (you will receive this when you share your public key with us)
 - Your **Key ID** (you will receive this when you share your public key with us)
 - **Audience** `api.happypathology.com`
-
-**User information:**
 - **User ID** (you will receive this when you share your public key with us)
 
 **Token settings:**
