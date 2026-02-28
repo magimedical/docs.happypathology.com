@@ -40,8 +40,8 @@ import (
 	"crypto/x509"
 	"encoding/pem"
 	"fmt"
-	"io/ioutil"
 	"log"
+	"os"
 	"time"
 
 	"github.com/lestrrat-go/jwx/jwa"
@@ -56,8 +56,8 @@ func main() {
 
 // V1 example
 func generateAuthToken() string {
-    // assuming the private key is stored in a file called "dev-happypathology-jwtRS256.key" in the current directory
-	_PRIVATE_KEY_, err := ioutil.ReadFile("dev-happypathology-jwtRS256.key")
+	// assuming the private key is stored in a file called "happypathology-jwtRS256.key" in the current directory
+	_PRIVATE_KEY_, err := os.ReadFile("happypathology-jwtRS256.key")
 	if err != nil {
 		log.Fatalf("failed to read private key: %v", err)
 	}
