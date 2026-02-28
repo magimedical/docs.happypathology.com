@@ -20,7 +20,7 @@ To sign a JWT aka Auth token, you need the following information:
 - **Audience** `api.happypathology.com`
 
 **User information:**
-- **User ID** (you can use any string that identifies the user)
+- **User ID** (you will receive this when you share your public key with us)
 
 **Token settings:**
 - **Expiration time** (you can set it to 1 hour or less)
@@ -73,7 +73,7 @@ func generateAuthToken() string {
 	j.IssuedAt(issued)
 	j.Issuer("<REPLACE THIS WITH THE ORGANIZATION ID WE PROVIDED YOU>")
 	j.JwtID(fmt.Sprintf("%d", time.Now().UnixNano()))
-	j.Subject("THIS IS A USER ID OF YOUR CHOICE")
+	j.Subject("<REPLACE THIS WITH THE USER ID WE PROVIDED YOU")
 	j.Claim("kid", "<REPLACE THIS WITH THE KEY ID WE PROVIDED YOU>")
 
 	token, err := j.Build()
@@ -148,7 +148,7 @@ def generate_auth_token():
         "iat": issued,                     # issued at
         "iss": "REPLACE THIS WITH THE ORGANIZATION ID WE PROVIDED YOU",     # issuer
         "jti": str(time.time_ns()),        # JWT ID (nanoseconds timestamp)
-        "sub": "REPLACE THIS WITH A USER ID OF YOUR CHOICE",             # subject
+        "sub": "REPLACE THIS WITH THE USER ID WE PROVIDED YOU",             # subject
         "kid": "REPLACE THIS WITH THE KEY ID WE PROVIDED YOU"               # key ID (custom claim)
     }
 

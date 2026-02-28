@@ -117,7 +117,7 @@ HappyPathology uses JSON Web Tokens (JWT) for authorization headers. For detaile
 | Issued at | `iat` | IntDate | Token issue time (Unix timestamp) |
 | Expiration | `exp` | IntDate | Token expiration time (Unix timestamp, max 1 hour from issue) |
 | Audience | `aud` | String | API domain and region (e.g., `us.api.happypathology.com`) |
-| User ID | `sub` | String | User ID from the organization owning the signing key |
+| User ID | `sub` | String | User ID for the organization owning the signing key |
 | Role | `role` | String | User role (`admin`, `user`, `device`, or `service`) |
 | Key ID * | `kid` | String | Required for `RS256` algorithm. ID of the public key used for signing |
 
@@ -151,7 +151,7 @@ cat jwtRS256.key.pub
   "iat": 1682945428,
   "iss": "1stdevision.example.com",
   "jti": "2d33d1d518",
-  "sub": "01234567-789d-46b7-b38c-45d4562f5c12",
+  "sub": "01KJH0EFRV1HZ5VHM4X5KRXK0K",
   "role": "user",
   "kid": "01234567-789d-46b7-b38c-45d4562f5c12"
 }
