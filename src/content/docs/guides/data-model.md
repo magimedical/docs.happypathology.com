@@ -7,6 +7,29 @@ This page describes the structure of every object returned by the HappyPathology
 
 ---
 
+## Basic Data Types
+
+### Timestamps
+
+All dates in the Medical Document are represented as Unix (UTC) timestamps.
+```
+"date_of_birth": "1772581386"
+```
+
+Operational timestamps, like `created_timestamp` and `updated_timestamp`, are also represented as Unix Nanoseconds (UTC).
+
+```
+"created_timestamp": "1772581386000000000"
+"updated_timestamp": "1772581386000000000"
+```
+
+
+### Status Codes
+
+The API uses standard HTTP status codes for errors. The `status` field in the response envelope mirrors the HTTP status code.
+
+---
+
 ## API Response Envelope
 
 Every response from the API wraps its payload in the same envelope:
@@ -67,6 +90,11 @@ Represents a batch of uploaded files being processed into cases.
 | `created_timestamp` | `number` | Unix nanoseconds |
 | `updated_timestamp` | `number` | Unix nanoseconds |
 | `account_id` | `string` | Your account ID |
+
+
+:::caution
+A Source can have a maximum of 100 cases.
+:::
 
 ### Source status
 

@@ -310,3 +310,10 @@ For example a document can be:
 
 Each document is processed and HappyPathology returns the structured data under `medical_data`.
 
+
+## Best Practices
+
+All API calls are subject to rate limits and should be polled with appropriate backoff strategies.
+The API will return a `429 Too Many Requests` status code if you exceed the rate limit.
+
+We recommend limiting number of API calls to less than 10 per second.
