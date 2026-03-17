@@ -144,9 +144,90 @@ This list is work in progress and is not comprehensive.
 |---|---|---|
 | `patient_first_name` | `string` | |
 | `patient_last_name` | `string` | |
+| `patient_middle_name` | `string` | |
+| `patient_suffix` | `string` | |
 | `patient_mrn` | `string` | Medical record number |
+| `patient_id` | `string` | This is not MRN, this is other patient identifiers often assigned by the lab |
 | `patient_dob` | `string` | Date of birth, e.g. `"1/2/2026"` |
+| `patient_ssn` | `string` | Social Security Number or a subset of it |
+| `patient_sex` | `string` | |
+| `patient_gender` | `string` | |
+| `patient_address_1` | `string` | |
+| `patient_address_2` | `string` | |
+| `patient_city` | `string` | |
+| `patient_state` | `string` | |
+| `patient_zip` | `string` | |
+| `patient_country` | `string` | |
+| `patient_phone_home` | `string` | |
+| `patient_phone_mobile` | `string` | |
+| - |- |-|
+| `patient_clincal_data` | `string` | |
+| `patient_icd10_codes` | `string` | |
+| - |- |-|
+| `specimen_id` | `string` | |
+| `specimen_type` | `string` | |
 | `specimen_reported_date` | `number` | Unix seconds |
+| `specimen_ordering_facility` | `string` | |
+| `specimen_ordering_physician` | `string` | |
+| `specimen_performing_lab` | `string` | |
+| `specimen_collection_date` | `number` | Unix seconds |
+| `specimen_received_date` | `number` | Unix seconds |
+| `specimen_reported_date` | `number` | Unix seconds |
+| `document_printed_date` | `number` | Unix seconds |
+| - |- |-|
+| `rbc_count` | `number` | |
+| `wbc_count` | `number` | |
+| `hemoglobin` | `number` | |
+| `hematocrit` | `number` | |
+| `mcv` | `number` | |
+| `mch` | `number` | |
+| `mchc` | `number` | |
+| `rdw` | `number` | |
+| `platelet_count` | `number` | |
+| `mpv` | `number` | |
+| `neutrophils_percent` | `number` | |
+| `lymphocytes_percent` | `number` | |
+| `monocytes_percent` | `number` | |
+| `eosinophils_percent` | `number` | |
+| `basophils_percent` | `number` | |
+| `absolute_neutrophil` | `number` | |
+| `absolute_lymphocyte` | `number` | |
+| `absolute_monocyte` | `number` | |
+| `absolute_eosinophil` | `number` | |
+| `absolute_basophil` | `number` | |
+| `immature_granulocyte_percent` | `number` | |
+| `absolute_immature_granulocyte` | `number` | |
+| `nrbc_count` | `number` | |
+| `blast_cell_percent` | `number` | |
+| `promyelocytes_percent` | `number` | |
+| `absolute_promyelocytes` | `number` | |
+| `myelocytes_percent` | `number` | |
+| `absolute_myelocytes` | `number` | |
+| `metamyelocytes_percent` | `number` | |
+| `absolute_metamyelocytes` | `number` | |
+| `bands_percent` | `number` | |
+| `absolute_bands` | `number` | |
+| `segmented_neutrophils_percent` | `number` | |
+| `reticulocytes_percent` | `number` | |
+| `absolute_reticulocytes` | `number` | |
+| `immature_reticulocyte_fraction_percent` | `number` | |
+| `atypical_lymphocytes_percent` | `number` | |
+| `absolute_atypical_lymphocytes` | `number` | |
+| `plasma_cell_count` | `number` | |
+| `normoblasts_percent` | `number` | |
+| `unclassified_cells_percent` | `number` | |
+| `absolute_unclassified_cells` | `number` | |
+| - |- |-|
+| `document_tag` | `string` |
+| - |- |-|
+| `precipio_patient_next_appointment_datetime` | `number` | Unix seconds |
+| `precipio_patient_clinical_status` | `string` | |
+| `precipio_patient_clinical_indications` | `string` | |
+| `precipio_copy_physician_name` | `string` | |
+| `precipio_tests_requested` | `string` | |
+| `precipio_test_id` | `string` | |
+
+
 
 
 
