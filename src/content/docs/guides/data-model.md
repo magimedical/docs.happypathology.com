@@ -136,9 +136,6 @@ For each field the values can be in either of the following formats:
 - Medical Test format `{ "value" : number , "measurement_unit" : string, "range" : { "min" : number, "max" : number }}`
 
 
-:::caution
-This list is work in progress and is not comprehensive.
-:::
 
 ### Patient Information
 
