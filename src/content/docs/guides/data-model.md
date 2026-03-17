@@ -247,34 +247,6 @@ For each field the values can be in either of the following formats:
 
 
 
-
-
-| Field | Typical unit |
-|---|---|
-| `wbc_count` | K/uL |
-| `rbc_count` | M/uL |
-| `hemoglobin` | g/dL |
-| `hematocrit` | % |
-| `mcv` | fL |
-| `mch` | pg |
-| `mchc` | g/dL |
-| `rdw` | % |
-| `platelet_count` | K/uL |
-| `mpv` | fL |
-| `neutrophils_percent` | % |
-| `absolute_neutrophil` | K/uL |
-| `lymphocytes_percent` | % |
-| `absolute_lymphocyte` | K/uL |
-| `monocytes_percent` | % |
-| `absolute_monocyte` | K/uL |
-| `eosinophils_percent` | % |
-| `absolute_eosinophil` | K/uL |
-| `basophils_percent` | % |
-| `absolute_basophil` | K/uL |
-| `immature_granulocyte_percent` | % |
-| `absolute_immature_granulocyte` | K/uL |
-| `nrbc_count` | K/uL |
-
 ---
 
 ## Lab Result
