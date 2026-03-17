@@ -13,14 +13,14 @@ This page describes the structure of every object returned by the HappyPathology
 
 All dates in the Medical Document are represented as Unix (UTC) timestamps.
 ```
-"date_of_birth": "1772581386"
+"date_of_birth": 1772581386
 ```
 
 Operational timestamps, like `created_timestamp` and `updated_timestamp`, are represented as Unix Nanoseconds (UTC).
 
 ```
-"created_timestamp": "1772581386000000000"
-"updated_timestamp": "1772581386000000000"
+"created_timestamp": 1772581386000000000
+"updated_timestamp": 1772581386000000000
 ```
 
 
@@ -167,7 +167,7 @@ This list is work in progress and is not comprehensive.
 
 | Field | Type | Description |
 | - |- |-|
-| `patient_clincal_data` | `string` | |
+| `patient_clinical_data` | `string` | |
 | `patient_icd10_codes` | `Array<string>` | |
 
 ### Specimen Information
@@ -175,8 +175,7 @@ This list is work in progress and is not comprehensive.
 | Field | Type | Description |
 | - |- |-|
 | `specimen_id` | `string` | |
-| `specimen_type` | `string` | |
-| `specimen_reported_date` | `number` | Unix seconds (see [Timestamps](#timestamps)) |
+| `specimen_type` | `Array<string>` | |
 | `specimen_ordering_facility` | `string` | |
 | `specimen_ordering_physician` | `string` | |
 | `specimen_performing_lab` | `string` | |
@@ -236,7 +235,7 @@ This list is work in progress and is not comprehensive.
 
 | Field | Type | Description |
 | - |- |-|
-| `document_tag` | `string` |
+| `document_tag` | `Array<string>` | |
 
 ### Precipio Requisition Form
 
