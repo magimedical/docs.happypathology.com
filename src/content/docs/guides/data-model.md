@@ -272,7 +272,7 @@ This is a comprehensive list of fields extracted by HappyPathology from medical 
 | `precipio_patient_clinical_indications` | `Array<string>` | |
 | `precipio_copy_physician_name` | `string` | |
 | `precipio_tests_requested` | `Array<string>` | |
-| `precipio_test_id` | `string` | |
+| `precipio_test_ids` | `Array<string>` | |
 
 
 
