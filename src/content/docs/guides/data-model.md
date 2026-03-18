@@ -162,6 +162,10 @@ Medical Test Format is an object used to represent medical test results, such as
 
 
 
+## All Supported Fields
+This is a comprehensive list of fields extracted by HappyPathology from medical documents.
+
+
 ### Patient Information
 
 | Field | Type | Description |
