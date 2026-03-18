@@ -13,14 +13,14 @@ This page describes the structure of every object returned by the HappyPathology
 
 All dates in the Medical Document are represented as Unix (UTC) timestamps.
 ```
-"date_of_birth": "1772581386"
+"date_of_birth": 1772581386
 ```
 
-Operational timestamps, like `created_timestamp` and `updated_timestamp`, are also represented as Unix Nanoseconds (UTC).
+Operational timestamps, like `created_timestamp` and `updated_timestamp`, are represented as Unix Nanoseconds (UTC).
 
 ```
-"created_timestamp": "1772581386000000000"
-"updated_timestamp": "1772581386000000000"
+"created_timestamp": 1772581386000000000
+"updated_timestamp": 1772581386000000000
 ```
 
 
@@ -130,57 +130,17 @@ The following is a list of all available fields that HappyPathology can extract 
 
 For each field the values can be in either of the following formats:
 
-- `string`
-- `number` (this is always an int64)
-- Medical Test of format `{ "value" : number , "measurement_unit" : string, "range" : { "min" : number, "max" : number }}`
-
-
-:::caution
-This list is work in progress and is not comprehensive.
-:::
-
-
-| Field | Type | Description |
-|---|---|---|
-| `patient_first_name` | `string` | |
-| `patient_last_name` | `string` | |
-| `patient_mrn` | `string` | Medical record number |
-| `patient_dob` | `string` | Date of birth, e.g. `"1/2/2026"` |
-| `specimen_reported_date` | `number` | Unix seconds |
-
-
-
-| Field | Typical unit |
+| Format | Description |
 |---|---|
-| `wbc_count` | K/uL |
-| `rbc_count` | M/uL |
-| `hemoglobin` | g/dL |
-| `hematocrit` | % |
-| `mcv` | fL |
-| `mch` | pg |
-| `mchc` | g/dL |
-| `rdw` | % |
-| `platelet_count` | K/uL |
-| `mpv` | fL |
-| `neutrophils_percent` | % |
-| `absolute_neutrophil` | K/uL |
-| `lymphocytes_percent` | % |
-| `absolute_lymphocyte` | K/uL |
-| `monocytes_percent` | % |
-| `absolute_monocyte` | K/uL |
-| `eosinophils_percent` | % |
-| `absolute_eosinophil` | K/uL |
-| `basophils_percent` | % |
-| `absolute_basophil` | K/uL |
-| `immature_granulocyte_percent` | % |
-| `absolute_immature_granulocyte` | K/uL |
-| `nrbc_count` | K/uL |
+| `string` | Text value |
+| `number` (this is always an int64) | Numeric value |
+| `Array<string>` | Array of text values |
+| `medical_test_format` | Object with value, unit, and reference range |
 
----
 
-## Lab Result
+**Medical Test Format**
 
-The shape used for every CBC marker value.
+Medical Test Format is an object used to represent medical test results, such as CBC tests. The struct has the following fields:
 
 | Field | Type | Description |
 |---|---|---|
@@ -199,3 +159,120 @@ The shape used for every CBC marker value.
     }
 }
 ```
+
+
+
+## All Supported Fields
+This is a comprehensive list of fields extracted by HappyPathology from medical documents.
+
+
+### Patient Information
+
+| Field | Type | Description |
+|---|---|---|
+| `patient_first_name` | `string` | |
+| `patient_last_name` | `string` | |
+| `patient_middle_name` | `string` | |
+| `patient_suffix` | `string` | |
+| `patient_mrn` | `string` | Medical record number |
+| `patient_id` | `string` | This is not MRN, this is other patient identifiers often assigned by the lab |
+| `patient_dob` | `number` | Unix timestamp (see [Timestamps](#timestamps)) |
+| `patient_ssn` | `string` | Social Security Number or a subset of it |
+| `patient_sex` | `string` | |
+| `patient_gender` | `string` | |
+| `patient_address_1` | `string` | |
+| `patient_address_2` | `string` | |
+| `patient_city` | `string` | |
+| `patient_state` | `string` | |
+| `patient_zip` | `string` | |
+| `patient_country` | `string` | |
+| `patient_phone_home` | `string` | |
+| `patient_phone_mobile` | `string` | |
+
+### Patient Clinical Data
+
+| Field | Type | Description |
+| - |- |-|
+| `patient_clinical_data` | `string` | |
+| `patient_icd10_codes` | `Array<string>` | |
+
+### Specimen Information
+
+| Field | Type | Description |
+| - |- |-|
+| `specimen_id` | `string` | |
+| `specimen_type` | `Array<string>` | |
+| `specimen_ordering_facility` | `string` | |
+| `specimen_ordering_physician` | `string` | |
+| `specimen_performing_lab` | `string` | |
+| `specimen_collection_date` | `number` | Unix seconds (see [Timestamps](#timestamps)) |
+| `specimen_received_date` | `number` | Unix seconds (see [Timestamps](#timestamps)) |
+| `specimen_reported_date` | `number` | Unix seconds (see [Timestamps](#timestamps)) |
+| `document_printed_date` | `number` | Unix seconds (see [Timestamps](#timestamps)) |
+
+### Medical Tests
+
+| Field | Type | Description |
+| - |- |-|
+| `rbc_count` | `medical_test_format` | |
+| `wbc_count` | `medical_test_format` | |
+| `hemoglobin` | `medical_test_format` | |
+| `hematocrit` | `medical_test_format` | |
+| `mcv` | `medical_test_format` | |
+| `mch` | `medical_test_format` | |
+| `mchc` | `medical_test_format` | |
+| `rdw` | `medical_test_format` | |
+| `platelet_count` | `medical_test_format` | |
+| `mpv` | `medical_test_format` | |
+| `neutrophils_percent` | `medical_test_format` | |
+| `lymphocytes_percent` | `medical_test_format` | |
+| `monocytes_percent` | `medical_test_format` | |
+| `eosinophils_percent` | `medical_test_format` | |
+| `basophils_percent` | `medical_test_format` | |
+| `absolute_neutrophil` | `medical_test_format` | |
+| `absolute_lymphocyte` | `medical_test_format` | |
+| `absolute_monocyte` | `medical_test_format` | |
+| `absolute_eosinophil` | `medical_test_format` | |
+| `absolute_basophil` | `medical_test_format` | |
+| `immature_granulocyte_percent` | `medical_test_format` | |
+| `absolute_immature_granulocyte` | `medical_test_format` | |
+| `nrbc_count` | `medical_test_format` | |
+| `blast_cell_percent` | `medical_test_format` | |
+| `promyelocytes_percent` | `medical_test_format` | |
+| `absolute_promyelocytes` | `medical_test_format` | |
+| `myelocytes_percent` | `medical_test_format` | |
+| `absolute_myelocytes` | `medical_test_format` | |
+| `metamyelocytes_percent` | `medical_test_format` | |
+| `absolute_metamyelocytes` | `medical_test_format` | |
+| `bands_percent` | `medical_test_format` | |
+| `absolute_bands` | `medical_test_format` | |
+| `segmented_neutrophils_percent` | `medical_test_format` | |
+| `reticulocytes_percent` | `medical_test_format` | |
+| `absolute_reticulocytes` | `medical_test_format` | |
+| `immature_reticulocyte_fraction_percent` | `medical_test_format` | |
+| `atypical_lymphocytes_percent` | `medical_test_format` | |
+| `absolute_atypical_lymphocytes` | `medical_test_format` | |
+| `plasma_cell_count` | `medical_test_format` | |
+| `normoblasts_percent` | `medical_test_format` | |
+| `unclassified_cells_percent` | `medical_test_format` | |
+| `absolute_unclassified_cells` | `medical_test_format` | |
+
+### Document Metadata
+
+| Field | Type | Description |
+| - |- |-|
+| `document_tag` | `Array<string>` | |
+
+### Precipio Requisition Form
+
+| Field | Type | Description |
+| - |- |-|
+| `precipio_patient_next_appointment_datetime` | `number` | Unix seconds (see [Timestamps](#timestamps)) |
+| `precipio_patient_clinical_status` | `string` | |
+| `precipio_patient_clinical_indications` | `Array<string>` | |
+| `precipio_copy_physician_name` | `string` | |
+| `precipio_tests_requested` | `Array<string>` | |
+| `precipio_test_ids` | `Array<string>` | |
+
+
+
