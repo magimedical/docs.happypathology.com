@@ -130,10 +130,35 @@ The following is a list of all available fields that HappyPathology can extract 
 
 For each field the values can be in either of the following formats:
 
-- `string`
-- `number` (this is always an int64)
-- `Array<string>`
-- Medical Test format `{ "value" : number , "measurement_unit" : string, "range" : { "min" : number, "max" : number }}`
+| Format | Description |
+|---|---|
+| `string` | Text value |
+| `number` (this is always an int64) | Numeric value |
+| `Array<string>` | Array of text values |
+| `medical_test_format` | Object with value, unit, and reference range |
+
+
+**Medical Test Format**
+
+Medical Test Format is an object used to represent medical test results, such as CBC tests. The struct has the following fields:
+
+| Field | Type | Description |
+|---|---|---|
+| `value` | `number` | Measured value |
+| `measurement_unit` | `string` | Unit of measurement, e.g. `"K/uL"`, `"g/dL"`, `"%"` |
+| `range.min` | `number` | Lower bound of the reference range |
+| `range.max` | `number` | Upper bound of the reference range |
+
+```json
+{
+    "value": 10.14,
+    "measurement_unit": "K/uL",
+    "range": {
+        "min": 4,
+        "max": 11
+    }
+}
+```
 
 
 
@@ -247,26 +272,3 @@ For each field the values can be in either of the following formats:
 
 
 
----
-
-## Lab Result
-
-The shape used for every CBC marker value.
-
-| Field | Type | Description |
-|---|---|---|
-| `value` | `number` | Measured value |
-| `measurement_unit` | `string` | Unit of measurement, e.g. `"K/uL"`, `"g/dL"`, `"%"` |
-| `range.min` | `number` | Lower bound of the reference range |
-| `range.max` | `number` | Upper bound of the reference range |
-
-```json
-{
-    "value": 10.14,
-    "measurement_unit": "K/uL",
-    "range": {
-        "min": 4,
-        "max": 11
-    }
-}
-```
