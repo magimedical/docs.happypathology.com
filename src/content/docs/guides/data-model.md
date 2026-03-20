@@ -90,6 +90,7 @@ Represents a batch of uploaded files being processed into cases.
 | `created_timestamp` | `number` | Unix nanoseconds |
 | `updated_timestamp` | `number` | Unix nanoseconds |
 | `account_id` | `string` | Your account ID |
+| `expiration_unix_time` | `number` | Unix seconds - when this source and all related data will be deleted |
 
 
 :::caution
