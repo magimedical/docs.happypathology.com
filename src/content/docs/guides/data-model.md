@@ -259,6 +259,8 @@ This is a comprehensive list of fields that are extracted and placed into the `p
 
 
 ### Miscellaneous
+| Field | Type | Description |
+| - |- |-|
 | `document_printed_date` | `number` | When the document was printed or downloaded (Unix seconds) |
 
 
