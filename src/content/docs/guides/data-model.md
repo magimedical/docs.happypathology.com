@@ -32,7 +32,7 @@ Unix Nanoseconds (UTC)
 
 ### Status Codes
 
-The API uses standard HTTP status codes for errors. The `status` field in the response envelope mirrors the HTTP status code.
+The API uses standard HTTP status codes for errors.
 
 ---
 
@@ -108,11 +108,12 @@ A Source can have a maximum of 100 cases.
 | Value | Meaning |
 |---|---|
 | `pending_upload` | Waiting for files to arrive |
-| `processing` | Files received, cases being extracted |
+| `processing` | Files received, source is being created |
 | `complete` | Source created — `case_ids` is returned in the response |
 | `failed` | Source processing failed. You will need to start over from the beginning (create a new source) |
 
 ---
+
 
 ## Patient Case
 
@@ -129,7 +130,6 @@ Represents a single patient's case extracted from a source document. One source 
 | `expiration_unix_time` | `number` | When this case and all its related data will be deleted (Unix seconds) |
 | `medical_data` | `object` | Extracted medical documents — see [Medical Document](#medical-document-medical_data) |
 
-The full case contents, including extracted medical data, are returned by the `/v1/patient_case/{CASE_ID}/extract` endpoint. All the extracted data are available under `results.medical_data`.
 
 ### Patient Case status
 
@@ -142,13 +142,17 @@ The full case contents, including extracted medical data, are returned by the `/
 
 ---
 
+
 ## Medical Document (medical_data)
 
 HappyPathology intelligently scans your files to determine related pages of information. Then, it groups these pages into "Medical Documents" (For example, an Lab Order Form and a CBC Report would result in two Medical Documents). Lastly, it extracts data from the Medical Document's pages and stores the structured data.
 
 The `medical_data` object is a map of all Medical Documents and their data.
 
-Each Medical Document is keyed by a document ID (a ULID) and has the following structure:
+Each Medical Document is keyed by a document ID (a ULID). A medical document's data is split into two categories: `patient_info` and `medical_tests`.
+
+The Medical Document's structure looks like this:
+
 
 | Field | Type | Description |
 |---|---|---|
@@ -156,7 +160,8 @@ Each Medical Document is keyed by a document ID (a ULID) and has the following s
 | `medical_tests` | `Array<object>` | Distinct Medical orders/requisitions, and Medical Test Results |
 | `tags` | `Array<string>` | Document tags used to identify special documents (e.g. `"precipio_requisition_form"`) |
 
-For each field the values can be in either of the following formats:
+
+Inside `patient_info` and `medical_tests`, each field the values can be in either of the following formats:
 
 | Format | Description |
 |---|---|
@@ -164,6 +169,7 @@ For each field the values can be in either of the following formats:
 | `number` | int64 |
 | `Array<string>` | Array of text values |
 | `medical_test_format` | Object with value, unit, and reference range |
+
 
 **Medical Test Format**
 
@@ -187,9 +193,38 @@ Medical Test Format is an object used to represent medical test results, such as
 }
 ```
 
+### Example Medical Document
+
+```json
+{
+    "patient_info": {
+        "patient_address_1": "123 main rd",
+        "patient_city": "fairfax",
+        "patient_clinical_data": "chronic pancreatitis / leukopenia",
+        "patient_dob": 953575425,
+        "patient_first_name": "bob",
+        "patient_last_name": "smith",
+        "patient_phone_home": "4016134421",
+        "patient_sex": "male",
+        "patient_state": "va",
+        "patient_zip": "22030",
+    },
+    "medical_tests": [
+        {
+            "specimen_collection_date": 1658760300,
+            "specimen_ordering_facility": "good care llc",
+            "specimen_ordering_physician": "dr. mary zhao",
+            "specimen_performing_lab": "labcorp virginia"
+            "specimen_received_date": 1658793600,
+            "specimen_type": "peripheral blood"
+        }
+    ],
+}
+```
 
 ## All Patient Info Fields
 This is a comprehensive list of fields that are extracted and placed into the `patient_info` object.
+
 
 ### Patient Information
 
@@ -214,6 +249,7 @@ This is a comprehensive list of fields that are extracted and placed into the `p
 | `patient_phone_home` | `string` | |
 | `patient_phone_mobile` | `string` | |
 
+
 ### Patient Clinical Data
 
 | Field | Type | Description |
@@ -221,8 +257,10 @@ This is a comprehensive list of fields that are extracted and placed into the `p
 | `patient_clinical_data` | `string` | A summary of the patient's signs, symptoms, clinical impressions, and prior diagnosis mentioned in the document |
 | `patient_icd10_codes` | `Array<string>` | Patient's listed ICD10 codes in the document (Does not generate/infer ICD10 Codes) |
 
+
 ### Miscellaneous
 | `document_printed_date` | `number` | When the document was printed or downloaded (Unix seconds) |
+
 
 ### Precipio Patient and Physician Information
 
@@ -233,8 +271,10 @@ This is a comprehensive list of fields that are extracted and placed into the `p
 | `precipio_patient_clinical_indications` | `Array<string>` | |
 | `precipio_copy_physician_name` | `string` | |
 
+
 ## All Medical Tests Fields
 This is a comprehensive list of fields that are extracted and placed into the `medical_tests` objects.
+
 
 ### Specimen Information
 
@@ -247,6 +287,7 @@ This is a comprehensive list of fields that are extracted and placed into the `m
 | `specimen_collection_date` | `number` | The date the specimen was extracted from the Patient (Unix seconds) |
 | `specimen_received_date` | `number` | The date the specimen was received by the lab (Unix seconds) |
 | `specimen_reported_date` | `number` | The date the test was performed on the specimen (Unix seconds) |
+
 
 ### Medical Tests
 
@@ -294,6 +335,7 @@ This is a comprehensive list of fields that are extracted and placed into the `m
 | `normoblasts_percent` | `medical_test_format` | |
 | `unclassified_cells_percent` | `medical_test_format` | |
 | `absolute_unclassified_cells` | `medical_test_format` | |
+
 
 ### Precipio Orders
 
