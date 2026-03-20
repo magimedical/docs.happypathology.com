@@ -258,42 +258,60 @@ When ready, the response contains the structured medical data under `results.med
     "status": 200,
     "results": {
         "status": "complete",
-        "id": "01KJDHYF3GR99Y7CDGC27K1EGP",
-        "source_id": "01KJDHXSC5B768KG1Q7BM54K4E",
-        "case_name": "Patient 8239534 Ali Moeeny DOB:7/20/1978",
+        "created_timestamp": 1774005780212133159,
+        "updated_timestamp": 1774005849334733262,
+        "id": "01KM5FQZMYKG2DA4FV2KPFXSZ2",
+        "source_id": "01KM5FQY0ZTTT0JWTQEDTJPT89",
+        "case_version": 1,
+        "expiration_unix_time": 1776597778,
         "medical_data": {
-          "01KJE278B2856XBQTF2ED1TSH2":  {
-                "patient_first_name": "Ali",
-                "patient_last_name": "Moeeny",
-                "patient_mrn": "123456",
-                "patient_dob": "1/2/2026",
-                "wbc_count": {
-                    "value": 10.14,
-                    "measurement_unit": "K/uL",
-                    "range": { "min": 4, "max": 11 }
+            "01KM5FT37PKPMKMZD60FS4DQCM": {
+                "patient_info": {
+                    "document_printed_date": 1753481400,
+                    "patient_dob": 799720810,
+                    "patient_first_name": "Jane",
+                    "patient_last_name": "Doe",
+                    "patient_mrn": "1234567"
                 },
-                "hemoglobin": {
-                    "value": 14.6,
-                    "measurement_unit": "g/dL",
-                    "range": { "min": 13.5, "max": 17.5 }
-                }
-            },
-            "01KJE2A53GH8T2B9KW43NR4E4V":  {
-                "patient_first_name": "Ali",
-                "patient_last_name": "Moeeny",
-                "patient_mrn": "123456",
-                "patient_dob": "3/4/2026",
-                "wbc_count": {
-                    "value": 7.12,
-                    "measurement_unit": "K/uL",
-                    "range": { "min": 4, "max": 11 }
-                }
+                "medical_tests": [
+                    {
+                        "hematocrit": {
+                            "value": 44.4,
+                            "measurement_unit": "%",
+                            "range": {
+                                "min": 34.4,
+                                "max": 44.2
+                            }
+                        },
+                        "hemoglobin": {
+                            "value": 14.6,
+                            "measurement_unit": "g/dL",
+                            "range": {
+                                "min": 11.5,
+                                "max": 15.1
+                            }
+                        },
+                        "specimen_collection_date": 1753401600,
+                        "specimen_ordering_physician": "caroline meehan, md",
+                        "specimen_performing_lab": "massachusetts general hospital",
+                        "specimen_reported_date": 1753401600,
+                        "specimen_type": "blood",
+                        "wbc_count": {
+                            "value": 10.14,
+                            "measurement_unit": "K/CUMM",
+                            "range": {
+                                "min": 3.5,
+                                "max": 10.6
+                            }
+                        }
+                    }
+                ]
             }
-        },
+        }
     },
     "debug_info": {
-        "delta": "1.007220824s",
-        "version": "happy_api.549.main.02ec7cd"
+        "delta": "107.986194ms",
+        "version": "happy_api.720.main.3244488"
     }
 }
 ```
