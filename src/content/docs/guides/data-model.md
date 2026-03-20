@@ -118,10 +118,14 @@ Represents a single patient's case extracted from a source document. One source 
 | `source_id` | `string` | The source this case was extracted from |
 | `account_id` | `string` | Your account ID |
 | `status` | `string` | Current processing state (this is NOT the http status code) |
+| `case_name` | `string` | Auto-generated display name for the case |
 | `created_timestamp` | `number` | Unix nanoseconds |
 | `updated_timestamp` | `number` | Unix nanoseconds |
+| `expiration_unix_time` | `number` | Unix seconds — when this case and all related data will be deleted |
+| `medical_data` | `object` | Extracted medical documents — see [Medical Document](#medical-document) |
+| `extract_metadata` | `object` | Extraction metadata keyed by document ID — see [Extract Metadata](#extract-metadata) |
 
-The full case contents, including extracted medical data, are returned by the `/v1/patient_case/{CASE_ID}/extract` endpoint under `results.medical_data`.
+The full case contents, including extracted medical data, are returned by the `/v1/patient_case/{CASE_ID}/extract` endpoint. All the extracted data are available under `results.medical_data`.
 
 ---
 
