@@ -131,6 +131,14 @@ The full case contents, including extracted medical data, are returned by the `/
 
 ## Medical Document
 
+Each entry in `patient_case.medical_data` is keyed by a document ID (a ULID) and has the following structure:
+
+| Field | Type | Description |
+|---|---|---|
+| `patient_info` | `object` | Patient demographic and clinical fields extracted from this document |
+| `medical_tests` | `Array<object>` | One entry per distinct test order or results — contains specimen fields and test measurements |
+| `tags` | `Array<string>` | Special document tags (e.g. `"precipio_requisition_form"`) |
+
 The following is a list of all available fields that HappyPathology can extract from a document.
 
 For each field the values can be in either of the following formats:
