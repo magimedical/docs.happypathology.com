@@ -89,7 +89,7 @@ Represents a batch of uploaded files being processed into cases.
 | Field | Type | Description |
 |---|---|---|
 | `id` | `string` | Source ID — reference this when polling status and in Step 4 |
-| `status` | `string` | Current processing state (this is NOT the http status code) |
+| `status` | `string` | Current processing state (this is NOT the http status code) — see [Source Status](#source-status) |
 | `expected_file_count` | `number` | Number of files declared when the source was created |
 | `uploaded_file_count` | `number` | Number of files received so far |
 | `case_ids` | `string[]` or `null` | IDs of extracted cases — populated when `status` is `complete` |
@@ -127,8 +127,7 @@ Represents a single patient's case extracted from a source document. One source 
 | `created_timestamp` | `number` | When this Case was originally created (Unix nanoseconds)  |
 | `updated_timestamp` | `number` | When this Case was last modified (Unix nanoseconds)  |
 | `expiration_unix_time` | `number` | When this case and all its related data will be deleted (Unix seconds) |
-| `medical_data` | `object` | Extracted medical documents — see [Medical Document](#medical-document) |
-| `extract_metadata` | `object` | Extraction metadata keyed by document ID — see [Extract Metadata](#extract-metadata) |
+| `medical_data` | `object` | Extracted medical documents — see [Medical Document](#medical-document-medical_data) |
 
 The full case contents, including extracted medical data, are returned by the `/v1/patient_case/{CASE_ID}/extract` endpoint. All the extracted data are available under `results.medical_data`.
 
