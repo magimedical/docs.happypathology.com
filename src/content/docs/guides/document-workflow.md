@@ -269,8 +269,8 @@ When ready, the response contains the structured medical data under `results.med
                 "patient_info": {
                     "document_printed_date": 1753481400,
                     "patient_dob": 799720810,
-                    "patient_first_name": "Jane",
-                    "patient_last_name": "Doe",
+                    "patient_first_name": "jane",
+                    "patient_last_name": "doe",
                     "patient_mrn": "1234567"
                 },
                 "medical_tests": [
