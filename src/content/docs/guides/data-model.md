@@ -12,11 +12,17 @@ This page describes the structure of every object returned by the HappyPathology
 ### Timestamps
 
 All dates in the Medical Document are represented as Unix (UTC) timestamps.
+Some are in Seconds, some are in Nanoseconds. Please reference the individual field's documentation.
+
+For Example:
+
+Unix Seconds (UTC)
+
 ```
 "date_of_birth": 1772581386
 ```
 
-Operational timestamps, like `created_timestamp` and `updated_timestamp`, are represented as Unix Nanoseconds (UTC).
+Unix Nanoseconds (UTC)
 
 ```
 "created_timestamp": 1772581386000000000
@@ -87,10 +93,10 @@ Represents a batch of uploaded files being processed into cases.
 | `expected_file_count` | `number` | Number of files declared when the source was created |
 | `uploaded_file_count` | `number` | Number of files received so far |
 | `case_ids` | `string[]` or `null` | IDs of extracted cases — populated when `status` is `complete` |
-| `created_timestamp` | `number` | Unix nanoseconds |
-| `updated_timestamp` | `number` | Unix nanoseconds |
+| `created_timestamp` | `number` | When this source was originally created (Unix nanoseconds) |
+| `updated_timestamp` | `number` | When this source record was last modified (Unix nanoseconds) |
 | `account_id` | `string` | Your account ID |
-| `expiration_unix_time` | `number` | Unix seconds - when this source and all related data will be deleted |
+| `expiration_unix_time` | `number` | When this source and all related data will be deleted (Unix Seconds) |
 
 
 :::caution
@@ -103,8 +109,8 @@ A Source can have a maximum of 100 cases.
 |---|---|
 | `pending_upload` | Waiting for files to arrive |
 | `processing` | Files received, cases being extracted |
-| `complete` | Extraction done — `case_ids` is populated |
-| `failed` | Processing failed, you need to start over |
+| `complete` | Source created — `case_ids` is returned in the response |
+| `failed` | Source processing failed. You will need to start over from the beginning (create a new source) |
 
 ---
 
@@ -118,38 +124,47 @@ Represents a single patient's case extracted from a source document. One source 
 | `source_id` | `string` | The source this case was extracted from |
 | `account_id` | `string` | Your account ID |
 | `status` | `string` | Current processing state (this is NOT the http status code) |
-| `case_name` | `string` | Auto-generated display name for the case |
-| `created_timestamp` | `number` | Unix nanoseconds |
-| `updated_timestamp` | `number` | Unix nanoseconds |
-| `expiration_unix_time` | `number` | Unix seconds — when this case and all related data will be deleted |
+| `created_timestamp` | `number` | When this Case was originally created (Unix nanoseconds)  |
+| `updated_timestamp` | `number` | When this Case was last modified (Unix nanoseconds)  |
+| `expiration_unix_time` | `number` | When this case and all its related data will be deleted (Unix seconds) |
 | `medical_data` | `object` | Extracted medical documents — see [Medical Document](#medical-document) |
 | `extract_metadata` | `object` | Extraction metadata keyed by document ID — see [Extract Metadata](#extract-metadata) |
 
 The full case contents, including extracted medical data, are returned by the `/v1/patient_case/{CASE_ID}/extract` endpoint. All the extracted data are available under `results.medical_data`.
 
+### Patient Case status
+
+| Value | Meaning |
+|---|---|
+| `created` | Waiting for system to begin processing |
+| `processing` | The Case is in the middle of processing |
+| `complete` | The case processing is done (Extracted JSON contents will be available) |
+| `failed` | The case processing is done, but it failed. You will need to start over from the beginning (create a new source)  |
+
 ---
 
-## Medical Document
+## Medical Document (medical_data)
 
-Each entry in `patient_case.medical_data` is keyed by a document ID (a ULID) and has the following structure:
+HappyPathology intelligently scans your files to determine related pages of information. Then, it groups these pages into "Medical Documents" (For example, an Lab Order Form and a CBC Report would result in two Medical Documents). Lastly, it extracts data from the Medical Document's pages and stores the structured data.
+
+The `medical_data` object is a map of all Medical Documents and their data.
+
+Each Medical Document is keyed by a document ID (a ULID) and has the following structure:
 
 | Field | Type | Description |
 |---|---|---|
-| `patient_info` | `object` | Patient demographic and clinical fields extracted from this document |
-| `medical_tests` | `Array<object>` | One entry per distinct test order or results — contains specimen fields and test measurements |
-| `tags` | `Array<string>` | Special document tags (e.g. `"precipio_requisition_form"`) |
-
-The following is a list of all available fields that HappyPathology can extract from a document.
+| `patient_info` | `object` | Patient demographic, billing, and clinical history extracted from this document |
+| `medical_tests` | `Array<object>` | Distinct Medical orders/requisitions, and Medical Test Results |
+| `tags` | `Array<string>` | Document tags used to identify special documents (e.g. `"precipio_requisition_form"`) |
 
 For each field the values can be in either of the following formats:
 
 | Format | Description |
 |---|---|
 | `string` | Text value |
-| `number` (this is always an int64) | Numeric value |
+| `number` | int64 |
 | `Array<string>` | Array of text values |
 | `medical_test_format` | Object with value, unit, and reference range |
-
 
 **Medical Test Format**
 
@@ -172,7 +187,6 @@ Medical Test Format is an object used to represent medical test results, such as
     }
 }
 ```
-
 
 
 ## All Supported Fields
