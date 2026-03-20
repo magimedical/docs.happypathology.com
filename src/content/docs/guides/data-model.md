@@ -12,11 +12,17 @@ This page describes the structure of every object returned by the HappyPathology
 ### Timestamps
 
 All dates in the Medical Document are represented as Unix (UTC) timestamps.
+Some are in Seconds, some are in Nanoseconds. Please reference the individual field's documentation.
+
+For Example:
+
+Unix Seconds (UTC)
+
 ```
 "date_of_birth": 1772581386
 ```
 
-Operational timestamps, like `created_timestamp` and `updated_timestamp`, are represented as Unix Nanoseconds (UTC).
+Unix Nanoseconds (UTC)
 
 ```
 "created_timestamp": 1772581386000000000
@@ -83,13 +89,14 @@ Represents a batch of uploaded files being processed into cases.
 | Field | Type | Description |
 |---|---|---|
 | `id` | `string` | Source ID — reference this when polling status and in Step 4 |
-| `status` | `string` | Current processing state (this is NOT the http status code) |
+| `status` | `string` | Current processing state (this is NOT the http status code) — see [Source Status](#source-status) |
 | `expected_file_count` | `number` | Number of files declared when the source was created |
 | `uploaded_file_count` | `number` | Number of files received so far |
 | `case_ids` | `string[]` or `null` | IDs of extracted cases — populated when `status` is `complete` |
-| `created_timestamp` | `number` | Unix nanoseconds |
-| `updated_timestamp` | `number` | Unix nanoseconds |
+| `created_timestamp` | `number` | When this source was originally created (Unix nanoseconds) |
+| `updated_timestamp` | `number` | When this source record was last modified (Unix nanoseconds) |
 | `account_id` | `string` | Your account ID |
+| `expiration_unix_time` | `number` | When this source and all related data will be deleted (Unix Seconds) |
 
 
 :::caution
@@ -102,8 +109,8 @@ A Source can have a maximum of 100 cases.
 |---|---|
 | `pending_upload` | Waiting for files to arrive |
 | `processing` | Files received, cases being extracted |
-| `complete` | Extraction done — `case_ids` is populated |
-| `failed` | Processing failed, you need to start over |
+| `complete` | Source created — `case_ids` is returned in the response |
+| `failed` | Source processing failed. You will need to start over from the beginning (create a new source) |
 
 ---
 
@@ -117,26 +124,46 @@ Represents a single patient's case extracted from a source document. One source 
 | `source_id` | `string` | The source this case was extracted from |
 | `account_id` | `string` | Your account ID |
 | `status` | `string` | Current processing state (this is NOT the http status code) |
-| `created_timestamp` | `number` | Unix nanoseconds |
-| `updated_timestamp` | `number` | Unix nanoseconds |
+| `created_timestamp` | `number` | When this Case was originally created (Unix nanoseconds)  |
+| `updated_timestamp` | `number` | When this Case was last modified (Unix nanoseconds)  |
+| `expiration_unix_time` | `number` | When this case and all its related data will be deleted (Unix seconds) |
+| `medical_data` | `object` | Extracted medical documents — see [Medical Document](#medical-document-medical_data) |
 
-The full case contents, including extracted medical data, are returned by the `/v1/patient_case/{CASE_ID}/extract` endpoint under `results.medical_data`.
+The full case contents, including extracted medical data, are returned by the `/v1/patient_case/{CASE_ID}/extract` endpoint. All the extracted data are available under `results.medical_data`.
+
+### Patient Case status
+
+| Value | Meaning |
+|---|---|
+| `created` | Waiting for system to begin processing |
+| `processing` | The Case is in the middle of processing |
+| `complete` | The case processing is done (Extracted JSON contents will be available) |
+| `failed` | The case processing is done, but it failed. You will need to start over from the beginning (create a new source)  |
 
 ---
 
-## Medical Document
+## Medical Document (medical_data)
 
-The following is a list of all available fields that HappyPathology can extract from a document.
+HappyPathology intelligently scans your files to determine related pages of information. Then, it groups these pages into "Medical Documents" (For example, an Lab Order Form and a CBC Report would result in two Medical Documents). Lastly, it extracts data from the Medical Document's pages and stores the structured data.
+
+The `medical_data` object is a map of all Medical Documents and their data.
+
+Each Medical Document is keyed by a document ID (a ULID) and has the following structure:
+
+| Field | Type | Description |
+|---|---|---|
+| `patient_info` | `object` | Patient demographic, billing, and clinical history extracted from this document |
+| `medical_tests` | `Array<object>` | Distinct Medical orders/requisitions, and Medical Test Results |
+| `tags` | `Array<string>` | Document tags used to identify special documents (e.g. `"precipio_requisition_form"`) |
 
 For each field the values can be in either of the following formats:
 
 | Format | Description |
 |---|---|
 | `string` | Text value |
-| `number` (this is always an int64) | Numeric value |
+| `number` | int64 |
 | `Array<string>` | Array of text values |
 | `medical_test_format` | Object with value, unit, and reference range |
-
 
 **Medical Test Format**
 
@@ -161,10 +188,8 @@ Medical Test Format is an object used to represent medical test results, such as
 ```
 
 
-
-## All Supported Fields
-This is a comprehensive list of fields extracted by HappyPathology from medical documents.
-
+## All Patient Info Fields
+This is a comprehensive list of fields that are extracted and placed into the `patient_info` object.
 
 ### Patient Information
 
@@ -175,8 +200,8 @@ This is a comprehensive list of fields extracted by HappyPathology from medical 
 | `patient_middle_name` | `string` | |
 | `patient_suffix` | `string` | |
 | `patient_mrn` | `string` | Medical record number |
-| `patient_id` | `string` | This is not MRN, this is other patient identifiers often assigned by the lab |
-| `patient_dob` | `number` | Unix timestamp (see [Timestamps](#timestamps)) |
+| `patient_id` | `string` | This is not the MRN. Labs often have their own unique ID for the patient |
+| `patient_dob` | `number` | Unix Seconds timestamp |
 | `patient_ssn` | `string` | Social Security Number or a subset of it |
 | `patient_sex` | `string` | |
 | `patient_gender` | `string` | |
@@ -193,22 +218,35 @@ This is a comprehensive list of fields extracted by HappyPathology from medical 
 
 | Field | Type | Description |
 | - |- |-|
-| `patient_clinical_data` | `string` | |
-| `patient_icd10_codes` | `Array<string>` | |
+| `patient_clinical_data` | `string` | A summary of the patient's signs, symptoms, clinical impressions, and prior diagnosis mentioned in the document |
+| `patient_icd10_codes` | `Array<string>` | Patient's listed ICD10 codes in the document (Does not generate/infer ICD10 Codes) |
+
+### Miscellaneous
+| `document_printed_date` | `number` | When the document was printed or downloaded (Unix seconds) |
+
+### Precipio Patient and Physician Information
+
+| Field | Type | Description |
+| - |- |-|
+| `precipio_patient_next_appointment_datetime` | `number` | Unix seconds |
+| `precipio_patient_clinical_status` | `string` | |
+| `precipio_patient_clinical_indications` | `Array<string>` | |
+| `precipio_copy_physician_name` | `string` | |
+
+## All Medical Tests Fields
+This is a comprehensive list of fields that are extracted and placed into the `medical_tests` objects.
 
 ### Specimen Information
 
 | Field | Type | Description |
 | - |- |-|
-| `specimen_id` | `string` | |
-| `specimen_type` | `Array<string>` | |
+| `specimen_type` | `string` | What type of sample is the specimen (Blood, Bone Marrow, Etc) |
 | `specimen_ordering_facility` | `string` | |
 | `specimen_ordering_physician` | `string` | |
 | `specimen_performing_lab` | `string` | |
-| `specimen_collection_date` | `number` | Unix seconds (see [Timestamps](#timestamps)) |
-| `specimen_received_date` | `number` | Unix seconds (see [Timestamps](#timestamps)) |
-| `specimen_reported_date` | `number` | Unix seconds (see [Timestamps](#timestamps)) |
-| `document_printed_date` | `number` | Unix seconds (see [Timestamps](#timestamps)) |
+| `specimen_collection_date` | `number` | The date the specimen was extracted from the Patient (Unix seconds) |
+| `specimen_received_date` | `number` | The date the specimen was received by the lab (Unix seconds) |
+| `specimen_reported_date` | `number` | The date the test was performed on the specimen (Unix seconds) |
 
 ### Medical Tests
 
@@ -257,20 +295,10 @@ This is a comprehensive list of fields extracted by HappyPathology from medical 
 | `unclassified_cells_percent` | `medical_test_format` | |
 | `absolute_unclassified_cells` | `medical_test_format` | |
 
-### Document Metadata
+### Precipio Orders
 
 | Field | Type | Description |
 | - |- |-|
-| `document_tag` | `Array<string>` | |
-
-### Precipio Requisition Form
-
-| Field | Type | Description |
-| - |- |-|
-| `precipio_patient_next_appointment_datetime` | `number` | Unix seconds (see [Timestamps](#timestamps)) |
-| `precipio_patient_clinical_status` | `string` | |
-| `precipio_patient_clinical_indications` | `Array<string>` | |
-| `precipio_copy_physician_name` | `string` | |
 | `precipio_tests_requested` | `Array<string>` | |
 | `precipio_test_ids` | `Array<string>` | |
 
