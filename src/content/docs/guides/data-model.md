@@ -189,9 +189,8 @@ Medical Test Format is an object used to represent medical test results, such as
 ```
 
 
-## All Supported Fields
-This is a comprehensive list of fields extracted by HappyPathology from medical documents.
-
+## All Patient Info Fields
+This is a comprehensive list of fields that are extracted and placed into the `patient_info` object.
 
 ### Patient Information
 
@@ -202,8 +201,8 @@ This is a comprehensive list of fields extracted by HappyPathology from medical 
 | `patient_middle_name` | `string` | |
 | `patient_suffix` | `string` | |
 | `patient_mrn` | `string` | Medical record number |
-| `patient_id` | `string` | This is not MRN, this is other patient identifiers often assigned by the lab |
-| `patient_dob` | `number` | Unix timestamp (see [Timestamps](#timestamps)) |
+| `patient_id` | `string` | This is not the MRN. Labs often have their own unique ID for the patient |
+| `patient_dob` | `number` | Unix Seconds timestamp |
 | `patient_ssn` | `string` | Social Security Number or a subset of it |
 | `patient_sex` | `string` | |
 | `patient_gender` | `string` | |
@@ -220,21 +219,35 @@ This is a comprehensive list of fields extracted by HappyPathology from medical 
 
 | Field | Type | Description |
 | - |- |-|
-| `patient_clinical_data` | `string` | |
-| `patient_icd10_codes` | `Array<string>` | |
+| `patient_clinical_data` | `string` | A summary of the patient's signs, symptoms, clinical impressions, and prior diagnosis mentioned in the document |
+| `patient_icd10_codes` | `Array<string>` | Patient's listed ICD10 codes in the document (Does not generate/infer ICD10 Codes) |
+
+### Miscellaneous
+| `document_printed_date` | `number` | When the document was printed or downloaded (Unix seconds) |
+
+### Precipio Patient and Physician Information
+
+| Field | Type | Description |
+| - |- |-|
+| `precipio_patient_next_appointment_datetime` | `number` | Unix seconds |
+| `precipio_patient_clinical_status` | `string` | |
+| `precipio_patient_clinical_indications` | `Array<string>` | |
+| `precipio_copy_physician_name` | `string` | |
+
+## All Medical Tests Fields
+This is a comprehensive list of fields that are extracted and placed into the `medical_tests` objects.
 
 ### Specimen Information
 
 | Field | Type | Description |
 | - |- |-|
-| `specimen_type` | `string` | |
+| `specimen_type` | `string` | What type of sample is the specimen (Blood, Bone Marrow, Etc) |
 | `specimen_ordering_facility` | `string` | |
 | `specimen_ordering_physician` | `string` | |
 | `specimen_performing_lab` | `string` | |
-| `specimen_collection_date` | `number` | Unix seconds (see [Timestamps](#timestamps)) |
-| `specimen_received_date` | `number` | Unix seconds (see [Timestamps](#timestamps)) |
-| `specimen_reported_date` | `number` | Unix seconds (see [Timestamps](#timestamps)) |
-| `document_printed_date` | `number` | Unix seconds (see [Timestamps](#timestamps)) |
+| `specimen_collection_date` | `number` | The date the specimen was extracted from the Patient (Unix seconds) |
+| `specimen_received_date` | `number` | The date the specimen was received by the lab (Unix seconds) |
+| `specimen_reported_date` | `number` | The date the test was performed on the specimen (Unix seconds) |
 
 ### Medical Tests
 
@@ -283,20 +296,10 @@ This is a comprehensive list of fields extracted by HappyPathology from medical 
 | `unclassified_cells_percent` | `medical_test_format` | |
 | `absolute_unclassified_cells` | `medical_test_format` | |
 
-### Document Metadata
+### Precipio Orders
 
 | Field | Type | Description |
 | - |- |-|
-| `document_tag` | `Array<string>` | |
-
-### Precipio Requisition Form
-
-| Field | Type | Description |
-| - |- |-|
-| `precipio_patient_next_appointment_datetime` | `number` | Unix seconds (see [Timestamps](#timestamps)) |
-| `precipio_patient_clinical_status` | `string` | |
-| `precipio_patient_clinical_indications` | `Array<string>` | |
-| `precipio_copy_physician_name` | `string` | |
 | `precipio_tests_requested` | `Array<string>` | |
 | `precipio_test_ids` | `Array<string>` | |
 
