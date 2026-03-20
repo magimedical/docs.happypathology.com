@@ -213,8 +213,7 @@ This is a comprehensive list of fields extracted by HappyPathology from medical 
 
 | Field | Type | Description |
 | - |- |-|
-| `specimen_id` | `string` | |
-| `specimen_type` | `Array<string>` | |
+| `specimen_type` | `string` | |
 | `specimen_ordering_facility` | `string` | |
 | `specimen_ordering_physician` | `string` | |
 | `specimen_performing_lab` | `string` | |
