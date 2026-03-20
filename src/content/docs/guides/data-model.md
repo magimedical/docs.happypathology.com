@@ -207,14 +207,14 @@ Medical Test Format is an object used to represent medical test results, such as
         "patient_phone_home": "4016134421",
         "patient_sex": "male",
         "patient_state": "va",
-        "patient_zip": "22030",
+        "patient_zip": "22030"
     },
     "medical_tests": [
         {
             "specimen_collection_date": 1658760300,
             "specimen_ordering_facility": "good care llc",
             "specimen_ordering_physician": "dr. mary zhao",
-            "specimen_performing_lab": "labcorp virginia"
+            "specimen_performing_lab": "labcorp virginia",
             "specimen_received_date": 1658793600,
             "specimen_type": "peripheral blood"
         }
