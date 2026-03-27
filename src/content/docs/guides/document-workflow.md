@@ -17,9 +17,9 @@ This feature requires the pdf document to include a specific HappyPathology sepa
 
 
 
-### Summary
+## 4-Step Workflow
 
-The workflow has four steps:
+The HappyPathology workflow has four steps:
 
 1. **Create a Source** — register the files you intend to upload. This will create a source and return a list of signed urls. Sources represent one or more files that will be processed.
 2. **Upload the Files** — PUT each file directly to Google Cloud Storage using the source's signed urls from Step 1.
@@ -28,7 +28,7 @@ The workflow has four steps:
 
 ---
 
-## Step 1: Create a Source
+### Step 1: Create a Source
 
 Make a `POST` request to `/v1/source` with the list of files you want to upload.
 
@@ -94,7 +94,7 @@ The signed upload URLs expire after five minutes.
 
 ---
 
-## Step 2: Upload the files
+### Step 2: Upload the files
 
 For each entry in `upload_urls`, PUT the corresponding file directly to Google Cloud Storage using the signed URL. This request goes to GCS — not to the HappyPathology API — so no `Authorization` header is needed.
 
@@ -128,7 +128,7 @@ A `200` response means the upload succeeded. If you receive any other status, re
 
 ---
 
-## Step 3: Poll the source for case IDs
+### Step 3: Poll the source for case IDs
 
 After uploading, poll `GET /v1/source/{SOURCE_ID}` periodically.
 
@@ -152,7 +152,7 @@ curl https://api.happypathology.com/v1/source/$SOURCE_ID \
 ```
 
 
-### Example responses
+#### Example responses
 
 **`pending_upload`** — no files have been received yet:
 
@@ -237,7 +237,7 @@ CASE_ID=$(echo "$SOURCE_RESPONSE" | jq -r '.results.case_ids[0]')
 
 ---
 
-## Step 4: Retrieve extracted case data
+### Step 4: Retrieve extracted case data
 
 For each case ID, poll `GET /v1/patient_case/{CASE_ID}/extract` until the http response status is `200`.
 
@@ -317,7 +317,7 @@ When ready, the response contains the structured medical data under `results.med
 ```
 
 
-### Extracted Data (medical_data)
+#### Extracted Data (medical_data)
 
 When HappyPathology processes a case's files, it organizes the pages into distinct documents.
 For example a document can be:
@@ -328,10 +328,12 @@ For example a document can be:
 
 Each document is processed and HappyPathology returns the structured data under `medical_data`.
 
+## Other Endpoints
 
-## List All Sources
+### List All Sources
 
-To get a list of all sources you have created, you can use the following API call.
+To get a list of all sources you have created (last 30 days), you can use call `GET /v1/sources/`
+
 It accepts two optional query parameters:
 - `limit`: The maximum number of sources to return.
 - `next_token`: The token to use for pagination.
@@ -343,7 +345,7 @@ If there is no `next_token` in the response, you have reached the end of the lis
 
 
 ```bash
-curl -X GET "https://api.happypathology.com/api/sources?limit=10&next_token=" \
+curl -X GET "https://api.happypathology.com/v1/sources?limit=10&next_token=" \
   -H "Authorization: Bearer YOUR_API_KEY"
 ```
 
