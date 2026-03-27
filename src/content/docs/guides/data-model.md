@@ -97,7 +97,7 @@ Represents a batch of uploaded files being processed into cases.
 | `updated_timestamp` | `number` | When this source record was last modified (Unix nanoseconds) |
 | `account_id` | `string` | Your account ID |
 | `expiration_unix_time` | `number` | When this source and all related data will be deleted (Unix Seconds) |
-| `original_file_names` | `map[string]string` | A map of the received files' filenames to their internal HappyPathology filepath |
+| `original_file_names` | `map[string]string` | A map of the received files' internal HappyPathology filepath to their original filenames |
 
 
 :::caution
