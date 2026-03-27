@@ -329,6 +329,63 @@ For example a document can be:
 Each document is processed and HappyPathology returns the structured data under `medical_data`.
 
 
+## List All Sources
+
+To get a list of all sources you have created, you can use the following API call.
+It accepts two optional query parameters:
+- `limit`: The maximum number of sources to return.
+- `next_token`: The token to use for pagination.
+
+When you first call this endpoint, you should not provide a `next_token` or pass an empty string.
+If there are more sources to fetch, the response will include a `next_token` field that you can use to fetch the next page of results.
+If there is no `next_token` in the response, you have reached the end of the list.
+
+
+
+```bash
+curl -X GET "https://api.happypathology.com/api/sources?limit=10&next_token=" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+
+Example Response:
+```json
+{
+    "status": 200,
+    "results": {
+        "next_token": "01KJZV8904W1B6A1AY3W63ET61",
+        "sources": [
+            {
+                "id": "01KKRXDSDB7NPK0VJS3WDYJT0S",
+                "original_file_names": {
+                    "01KKRXDSDB7NPK0VJS3WDYJT0S/SOURCE_FILES/01KKRXDSDB7NPK0VJS3WDYJT0S_1": "Ali1Page.pdf"
+                },
+                "created_timestamp": 1773583918585688572,
+                "account_id": "01JRPJC6DHSGTCKEEDS6XADCQK",
+                "updated_timestamp": 1773583919805339208,
+                "expiration_unix_time": 1776175918,
+                "status": "complete",
+                "expected_file_count": 1,
+                "uploaded_file_count": 1,
+                "case_ids": [
+                    "01KKRXDTA2GV3WT9QDDY8KS86G"
+                ]
+            },
+            // ... more sources
+        ]
+    },
+    "debug_info": {
+        "delta": "85.587215ms",
+        "version": "happy_api.727.main.0ffa27d"
+    }
+}
+```
+
+:::caution
+Sources are automatically deleted after 30 days.
+:::
+
+
 ## Best Practices
 
 All API calls are subject to rate limits and should be polled with appropriate backoff strategies.
