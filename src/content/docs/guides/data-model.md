@@ -130,7 +130,7 @@ Represents a single patient's case extracted from a source's document.
 | `updated_timestamp` | `number` | When this Case was last modified (Unix nanoseconds)  |
 | `expiration_unix_time` | `number` | When this case and all its related data will be deleted (Unix seconds) |
 | `secure_file_urls` | `map[string]string` | A map of temporary URLs to download the files that were used to create this case. The URLs expire after 5 minutes. |
-| `medical_data` | `object` | Extracted medical documents — see [Medical Document](#medical-document-medical_data) |
+| `medical_data` | `map[string]object` | Extracted medical documents — see [Medical Document](#medical-document-medical_data) |
 
 :::caution
 The `secure_file_urls` are dynamically generated every time `/v1/patient_case/$CASE_ID/extract` is called. The file URLs expire after 5 minutes for security and compliance purposes. Call `/v1/patient_case/$CASE_ID/extract` again to receive fresh file URLs.
