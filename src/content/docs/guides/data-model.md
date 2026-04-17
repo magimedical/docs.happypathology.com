@@ -349,8 +349,8 @@ This is a comprehensive list of fields that are extracted and placed into the `m
 
 | Field | Type | Description |
 | - |- |-|
-| `precipio_tests_requested` | `Array<string>` | |
-| `precipio_test_ids` | `Array<string>` | |
+| `precipio_test_requested` | `string` | |
+| `precipio_test_id` | `string` | |
 
 
 
