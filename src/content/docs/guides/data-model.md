@@ -167,7 +167,7 @@ The Medical Document's structure looks like this:
 | `tags` | `Array<string>` | Document tags used to identify special documents (e.g. `"precipio_requisition_form"`) |
 
 
-Inside `patient_info` and `medical_tests`, each field the values can be in either of the following formats:
+Inside `patient_info` and each item in `medical_tests`, each field the values can be in either of the following formats:
 
 | Format | Description |
 |---|---|
@@ -268,6 +268,7 @@ This is a comprehensive list of fields that are extracted and placed into the `p
 | Field | Type | Description |
 | - |- |-|
 | `document_printed_date` | `number` | When the document was printed or downloaded (Unix seconds) |
+| `hp_metadata` | `object` | Metadata about the extraction process  — see [Flags](#flags) |
 
 
 ### Precipio Patient and Physician Information
@@ -353,4 +354,64 @@ This is a comprehensive list of fields that are extracted and placed into the `m
 | `precipio_test_id` | `string` | |
 
 
+### Miscellaneous
+| Field | Type | Description |
+| - |- |-|
+| `hp_metadata` | `object` | Metadata about the extraction process  — see [Flags](#flags) |
 
+
+
+## Flags
+
+Inside `patient_info` and each item in `medical_tests`, there can be an optional `hp_metadata` object that contains flags about the extracted data.
+This object has the following structure:
+
+| Field | Type | Description |
+| - |- |-|
+| key | `string` | The name of the patient field or test field that is being flagged |
+| value | `string[]` | An array of flag values, can be `uncertain_value`, `uncertain_range` or `uncertain_measurement_unit` |
+
+For example the following is a snippet of a medicalDocument with flags:
+
+```json
+...
+    medical_data": {
+        "01KPDPTD2BWT40T5BEP3QK786R": {
+            "patient_info": {
+                "hp_metadata": {
+                    "patient_account_id": [
+                        "uncertain_value"
+                    ],
+                    "patient_gender": [
+                        "uncertain_value"
+                    ]
+                },
+                "patient_account_id": "3145142",
+                "patient_address_1": "123 Main street",
+                "patient_city": "Anytown",
+                "patient_country": "usa",
+                "patient_dob": 12345678,
+                "patient_first_name": "Jane",
+                "patient_gender": "female",
+                "patient_id": "123456",
+                "patient_last_name": "Dorian",
+            },
+            "medical_tests": [
+                {
+                        "hp_metadata": {
+                            "specimen_ordering_facility": [
+                                "uncertain_value"
+                            ],
+                            "specimen_ordering_physician": [
+                                "uncertain_value"
+                            ]
+                        },
+                        "specimen_collection_date": 1770768000,
+                        "specimen_ordering_facility": "oncology laboratories",
+                        "specimen_ordering_physician": "jim dale md",
+                        "specimen_type": "peripheral blood"
+                    },
+            ]
+        },
+        ...
+```
