@@ -332,7 +332,7 @@ Each document is processed and HappyPathology returns the structured data under 
 
 ### List All Sources
 
-To get a list of all sources you have created (last 30 days), you can use call `GET /v1/sources/`
+To get a list of all sources you have created (last 30 days), you can use  `GET /v1/sources/`
 
 It accepts two optional query parameters:
 - `limit`: The maximum number of sources to return.
@@ -386,6 +386,208 @@ Example Response:
 :::caution
 Sources are automatically deleted after 30 days.
 :::
+
+
+### Flattened Patient Case
+
+To get all the extracted information for a Patient Case as one flat JSON object you can use `GET /v1/patient_case/{CASE_ID}/extract/flatten?tags=XYZ`
+
+You can filter this information based on the tags on the documents.
+
+You can provide zero, one or multiple tags by separating them with a comma, for example: `tags=XYZ,ABC`
+When multiple tags are provided, documents that have ANY of the specified tags will be included in the flattened response.
+
+
+Example usage using curl:
+```bash
+curl "https://api.happypathology.com/v1/patient_case/$CASE_ID/extract/flatten?tags=XYZ" \
+  -H "Authorization: Bearer $YOUR_SIGNED_TOKEN"
+```
+
+When the case is ready, the response will be a flat JSON object containing all the extracted information. All values will be returned as objects structures like:
+
+| values | is_confident |
+|---|---|
+| Array of extracted values | Boolean. `true` if the service has full confidence in ALL the extracted values. `false` if there is even a single value that has low confidence |
+
+
+
+For example, if there are multiple patient medical record numbers (MRN) available in the document, all of them will be returned in an array for the key `patient_mrn`.
+
+
+Example response:
+
+```JSON
+{
+    "status": 200,
+    "results": {
+        "status": "complete",
+        "created_timestamp": 1774005780212133159,
+        "updated_timestamp": 1774005849334733262,
+        "medical_data": {
+            "id": "01KM5FQZMYKG2DA4FV2KPFXSZ2",
+            "patient_first_name": {
+                "values": [
+                    "Richard",
+                    "Rich"
+                ],
+                "is_confident": true
+            },
+            "patient_last_name": {
+                "values": [
+                    "Smith"
+                ],
+                "is_confident": true
+            },
+            "patient_id": {
+                "values": [
+                    "1234567"
+                ],
+                "is_confident": true
+            },
+            "hematocrit": {
+                "values": [
+                    {
+                        "value": 44.4,
+                        "measurement_unit": "%",
+                        "range": {
+                            "min": 34.4,
+                            "max": 44.2
+                        }
+                    }
+                ],
+                "is_confident": true
+            },
+            "hemoglobin": {
+                "values": [
+                    {
+                        "value": 14.6,
+                        "measurement_unit": "g/dL",
+                        "range": {
+                            "min": 11.5,
+                            "max": 15.1
+                        }
+                    }
+                ],
+                "is_confident": true
+            },
+            "specimen_collection_date": {
+                "values": [
+                    1753401600
+                ],
+                "is_confident": false
+            },
+            "specimen_ordering_physician": {
+                "values": [
+                    "coraline jones, md"
+                ],
+                "is_confident": true
+            },
+            "specimen_type": {
+                "values": [
+                    "blood",
+                    "urine"
+                ],
+                "is_confident": true
+            }
+        }
+    },
+    "debug_info": {
+        "delta": "107.986194ms",
+        "version": "happy_api.720.main.3244488"
+    }
+}
+```
+
+### Flatten/Latest Patient Case
+
+To get only the most recent values for each extracted field, you can use this endpoint `/api/v1/patient_case/{CASE_ID}/extract/flatten/latest`
+
+This endpoint requires a `sets` query parameter to specify which sets of fields to include in the response.
+
+The only supported set is: `CBC`
+
+for example:
+
+Example usage using curl:
+```bash
+curl "https://api.happypathology.com/v1/patient_case/$CASE_ID/extract/flatten/latest?sets=CBC" \
+  -H "Authorization: Bearer $YOUR_SIGNED_TOKEN"
+```
+
+The shape of the response is exactly the same as the flatten endpoint, but with only the most recent values for each field included.
+
+This api still can return multiple values for each field, since it is possible that there are multiple values available for a field with the same date.
+
+An example response:
+```JSON
+{
+    "status": 200,
+    "results": {
+        "status": "complete",
+        "created_timestamp": 1774005780212133159,
+        "updated_timestamp": 1774005849334733262,
+        "medical_data": {
+            "id": "01KM5FQZMYKG2DA4FV2KPFXSZ2",
+            "patient_id": {
+                "values": [
+                    "1234567"
+                ],
+                "is_confident": true
+            },
+            "hematocrit": {
+                "values": [
+                    {
+                        "value": 44.4,
+                        "measurement_unit": "%",
+                        "range": {
+                            "min": 34.4,
+                            "max": 44.2
+                        }
+                    }
+                ],
+                "is_confident": true
+            },
+            "hemoglobin": {
+                "values": [
+                    {
+                        "value": 14.6,
+                        "measurement_unit": "g/dL",
+                        "range": {
+                            "min": 11.5,
+                            "max": 15.1
+                        }
+                    }
+                ],
+                "is_confident": true
+            },
+            "specimen_collection_date": {
+                "values": [
+                    1753401600
+                ],
+                "is_confident": false
+            },
+            "specimen_ordering_physician": {
+                "values": [
+                    "coraline jones, md"
+                ],
+                "is_confident": true
+            },
+            "specimen_type": {
+                "values": [
+                    "blood",
+                    "urine"
+                ],
+                "is_confident": true
+            }
+        }
+    },
+    "debug_info": {
+        "delta": "107.986194ms",
+        "version": "happy_api.720.main.3244488"
+    }
+}
+```
 
 
 ## Best Practices
