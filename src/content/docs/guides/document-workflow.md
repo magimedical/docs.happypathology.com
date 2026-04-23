@@ -390,34 +390,31 @@ Sources are automatically deleted after 30 days.
 
 ### Flattened Patient Case
 
-To get all the extracted information for a Patient Case as one flat JSON object you can use `GET /v1/patient_case/{CASE_ID}/extract/flatten?tags=XYZ`
+To get all the extracted information for a Patient Case as one flat JSON object you can use `GET /v1/patient_case/{CASE_ID}/extract/flatten?tags=XYZ`.
 
-You can filter this information based on the tags on the documents.
-
-You can provide zero, one or multiple tags by separating them with a comma, for example: `tags=XYZ,ABC`
-When multiple tags are provided, documents that have ANY of the specified tags will be included in the flattened response.
-
+You can filter the response by tags on the source documents. Provide zero, one, or multiple tags separated by commas, for example `tags=XYZ,ABC`. When multiple tags are provided, documents that have **any** of the specified tags are included.
 
 Example usage using curl:
+
 ```bash
 curl "https://api.happypathology.com/v1/patient_case/$CASE_ID/extract/flatten?tags=XYZ" \
   -H "Authorization: Bearer $YOUR_SIGNED_TOKEN"
 ```
 
-When the case is ready, the response will be a flat JSON object containing all the extracted information. All values will be returned as objects structures like:
+When the case is ready, the response contains a `medical_data` map. Each key maps to an **array** of entries, one per source test/document that contributed values for that field. Every entry has the shape:
 
-| values | is_confident |
-|---|---|
-| Array of extracted values | Boolean. `true` if the service has full confidence in ALL the extracted values. `false` if there is even a single value that has low confidence |
+| field | type | description |
+|---|---|---|
+| `values` | array | Extracted values from a single source test. For lab measurements each value is an object with `value`, `measurement_unit`, and `range`. |
+| `is_confident` | boolean | `true` if the service has full confidence in every value in this entry. `false` if any value in this entry was flagged as uncertain (e.g. disagreement between extractors, or the user edited it). |
 
-
-
-For example, if there are multiple patient medical record numbers (MRN) available in the document, all of them will be returned in an array for the key `patient_mrn`.
-
+:::note
+The array wrapper exists because the same field can appear in multiple source documents or tests. For example, if two uploaded reports each mention the patient's first name, `patient_first_name` will contain two entries — one per source.
+:::
 
 Example response:
 
-```JSON
+```json
 {
     "status": 200,
     "results": {
@@ -425,71 +422,91 @@ Example response:
         "created_timestamp": 1774005780212133159,
         "updated_timestamp": 1774005849334733262,
         "medical_data": {
-            "id": "01KM5FQZMYKG2DA4FV2KPFXSZ2",
-            "patient_first_name": {
-                "values": [
-                    "Richard",
-                    "Rich"
-                ],
-                "is_confident": true
-            },
-            "patient_last_name": {
-                "values": [
-                    "Smith"
-                ],
-                "is_confident": true
-            },
-            "patient_id": {
-                "values": [
-                    "1234567"
-                ],
-                "is_confident": true
-            },
-            "hematocrit": {
-                "values": [
-                    {
-                        "value": 44.4,
-                        "measurement_unit": "%",
-                        "range": {
-                            "min": 34.4,
-                            "max": 44.2
+            "patient_first_name": [
+                {
+                    "values": [
+                        "Richard",
+                        "Rich"
+                    ],
+                    "is_confident": true
+                }
+            ],
+            "patient_last_name": [
+                {
+                    "values": [
+                        "Smith"
+                    ],
+                    "is_confident": true
+                }
+            ],
+            "patient_id": [
+                {
+                    "values": [
+                        "1234567"
+                    ],
+                    "is_confident": true
+                }
+            ],
+            "hematocrit": [
+                {
+                    "values": [
+                        {
+                            "value": 44.4,
+                            "measurement_unit": "%",
+                            "range": {
+                                "min": 34.4,
+                                "max": 44.2
+                            }
                         }
-                    }
-                ],
-                "is_confident": true
-            },
-            "hemoglobin": {
-                "values": [
-                    {
-                        "value": 14.6,
-                        "measurement_unit": "g/dL",
-                        "range": {
-                            "min": 11.5,
-                            "max": 15.1
+                    ],
+                    "is_confident": true
+                }
+            ],
+            "hemoglobin": [
+                {
+                    "values": [
+                        {
+                            "value": 14.6,
+                            "measurement_unit": "g/dL",
+                            "range": {
+                                "min": 11.5,
+                                "max": 15.1
+                            }
                         }
-                    }
-                ],
-                "is_confident": true
-            },
-            "specimen_collection_date": {
-                "values": [
-                    1753401600
-                ],
-                "is_confident": false
-            },
-            "specimen_ordering_physician": {
-                "values": [
-                    "coraline jones, md"
-                ],
-                "is_confident": true
-            },
-            "specimen_type": {
-                "values": [
-                    "blood",
-                    "urine"
-                ],
-                "is_confident": true
-            }
+                    ],
+                    "is_confident": true
+                }
+            ],
+            "specimen_collection_date": [
+                {
+                    "values": [
+                        1753401600
+                    ],
+                    "is_confident": false
+                }
+            ],
+            "specimen_ordering_physician": [
+                {
+                    "values": [
+                        "coraline jones, md"
+                    ],
+                    "is_confident": true
+                }
+            ],
+            "specimen_type": [
+                {
+                    "values": [
+                        "blood"
+                    ],
+                    "is_confident": true
+                },
+                {
+                    "values": [
+                        "urine"
+                    ],
+                    "is_confident": true
+                }
+            ]
         }
     },
     "debug_info": {
