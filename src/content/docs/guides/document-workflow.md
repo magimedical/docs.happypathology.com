@@ -518,26 +518,37 @@ Example response:
 
 ### Flatten/Latest Patient Case
 
-To get only the most recent values for each extracted field, you can use this endpoint `/api/v1/patient_case/{CASE_ID}/extract/flatten/latest`
+To get only the most recent results for a lab order, use `GET /v1/patient_case/{CASE_ID}/extract/flatten/latest?sets=CBC`.
 
-This endpoint requires a `sets` query parameter to specify which sets of fields to include in the response.
-
-The only supported set is: `CBC`
-
-for example:
+This endpoint requires a `sets` query parameter listing which sets of fields to include. The only supported set today is `CBC`.
 
 Example usage using curl:
+
 ```bash
 curl "https://api.happypathology.com/v1/patient_case/$CASE_ID/extract/flatten/latest?sets=CBC" \
   -H "Authorization: Bearer $YOUR_SIGNED_TOKEN"
 ```
 
-The shape of the response is exactly the same as the flatten endpoint, but with only the most recent values for each field included.
+The response has the same shape as the `/extract/flatten` endpoint — each field in `medical_data` maps to an array of `{ values, is_confident }` entries.
 
-This api still can return multiple values for each field, since it is possible that there are multiple values available for a field with the same date.
+:::note[Per-set semantics]
+A `set` (like `CBC`) represents a single lab order. Every measurement in that order shares the same `specimen_reported_date`.
 
-An example response:
-```JSON
+For each requested set, the endpoint:
+
+1. Finds the single most recent test run across all documents that contains any field belonging to that set.
+2. Returns every set field present in that winning test run.
+
+Fields that appear only in older test runs are **intentionally excluded** — they belong to a different (earlier) order.
+:::
+
+:::tip
+If two source documents report the same test on the same date (e.g. the same lab report extracted from two uploads), both contribute — you will see one entry per source in the array for each field.
+:::
+
+Example response:
+
+```json
 {
     "status": 200,
     "results": {
@@ -545,58 +556,44 @@ An example response:
         "created_timestamp": 1774005780212133159,
         "updated_timestamp": 1774005849334733262,
         "medical_data": {
-            "id": "01KM5FQZMYKG2DA4FV2KPFXSZ2",
-            "patient_id": {
-                "values": [
-                    "1234567"
-                ],
-                "is_confident": true
-            },
-            "hematocrit": {
-                "values": [
-                    {
-                        "value": 44.4,
-                        "measurement_unit": "%",
-                        "range": {
-                            "min": 34.4,
-                            "max": 44.2
+            "hematocrit": [
+                {
+                    "values": [
+                        {
+                            "value": 44.4,
+                            "measurement_unit": "%",
+                            "range": {
+                                "min": 34.4,
+                                "max": 44.2
+                            }
                         }
-                    }
-                ],
-                "is_confident": true
-            },
-            "hemoglobin": {
-                "values": [
-                    {
-                        "value": 14.6,
-                        "measurement_unit": "g/dL",
-                        "range": {
-                            "min": 11.5,
-                            "max": 15.1
+                    ],
+                    "is_confident": true
+                }
+            ],
+            "hemoglobin": [
+                {
+                    "values": [
+                        {
+                            "value": 14.6,
+                            "measurement_unit": "g/dL",
+                            "range": {
+                                "min": 11.5,
+                                "max": 15.1
+                            }
                         }
-                    }
-                ],
-                "is_confident": true
-            },
-            "specimen_collection_date": {
-                "values": [
-                    1753401600
-                ],
-                "is_confident": false
-            },
-            "specimen_ordering_physician": {
-                "values": [
-                    "coraline jones, md"
-                ],
-                "is_confident": true
-            },
-            "specimen_type": {
-                "values": [
-                    "blood",
-                    "urine"
-                ],
-                "is_confident": true
-            }
+                    ],
+                    "is_confident": true
+                }
+            ],
+            "specimen_reported_date": [
+                {
+                    "values": [
+                        1753401600
+                    ],
+                    "is_confident": true
+                }
+            ]
         }
     },
     "debug_info": {
