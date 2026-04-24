@@ -332,7 +332,7 @@ Each document is processed and HappyPathology returns the structured data under 
 
 ### List All Sources
 
-To get a list of all sources you have created (last 30 days), you can use call `GET /v1/sources/`
+To get a list of all sources you have created (last 30 days), you can use  `GET /v1/sources/`
 
 It accepts two optional query parameters:
 - `limit`: The maximum number of sources to return.
@@ -386,6 +386,222 @@ Example Response:
 :::caution
 Sources are automatically deleted after 30 days.
 :::
+
+
+### Flattened Patient Case
+
+To get all the extracted information for a Patient Case as one flat JSON object you can use `GET /v1/patient_case/{CASE_ID}/extract/flatten?tags=XYZ`.
+
+You can filter the response by tags on the source documents. Provide zero, one, or multiple tags separated by commas, for example `tags=XYZ,ABC`. When multiple tags are provided, documents that have **any** of the specified tags are included.
+
+Example usage using curl:
+
+```bash
+curl "https://api.happypathology.com/v1/patient_case/$CASE_ID/extract/flatten?tags=XYZ" \
+  -H "Authorization: Bearer $YOUR_SIGNED_TOKEN"
+```
+
+When the case is ready, the response contains a `medical_data` map. Each key maps to an **array** of entries, one per source test/document that contributed values for that field. Every entry has the shape:
+
+| field | type | description |
+|---|---|---|
+| `values` | array | Extracted values from a single source test. For lab measurements each value is an object with `value`, `measurement_unit`, and `range`. |
+| `is_confident` | boolean | `true` if the service has full confidence in every value in this entry. `false` if any value in this entry was flagged as uncertain (e.g. disagreement between extractors, or the user edited it). |
+
+:::note
+The array wrapper exists because the same field can appear in multiple source documents or tests. For example, if two uploaded reports each mention the patient's first name, `patient_first_name` will contain two entries — one per source.
+:::
+
+Example response:
+
+```json
+{
+    "status": 200,
+    "results": {
+        "status": "complete",
+        "created_timestamp": 1774005780212133159,
+        "updated_timestamp": 1774005849334733262,
+        "medical_data": {
+            "patient_first_name": [
+                {
+                    "values": [
+                        "Richard",
+                        "Rich"
+                    ],
+                    "is_confident": true
+                }
+            ],
+            "patient_last_name": [
+                {
+                    "values": [
+                        "Smith"
+                    ],
+                    "is_confident": true
+                }
+            ],
+            "patient_id": [
+                {
+                    "values": [
+                        "1234567"
+                    ],
+                    "is_confident": true
+                }
+            ],
+            "hematocrit": [
+                {
+                    "values": [
+                        {
+                            "value": 44.4,
+                            "measurement_unit": "%",
+                            "range": {
+                                "min": 34.4,
+                                "max": 44.2
+                            }
+                        }
+                    ],
+                    "is_confident": true
+                }
+            ],
+            "hemoglobin": [
+                {
+                    "values": [
+                        {
+                            "value": 14.6,
+                            "measurement_unit": "g/dL",
+                            "range": {
+                                "min": 11.5,
+                                "max": 15.1
+                            }
+                        }
+                    ],
+                    "is_confident": true
+                }
+            ],
+            "specimen_collection_date": [
+                {
+                    "values": [
+                        1753401600
+                    ],
+                    "is_confident": false
+                }
+            ],
+            "specimen_ordering_physician": [
+                {
+                    "values": [
+                        "coraline jones, md"
+                    ],
+                    "is_confident": true
+                }
+            ],
+            "specimen_type": [
+                {
+                    "values": [
+                        "blood"
+                    ],
+                    "is_confident": true
+                },
+                {
+                    "values": [
+                        "urine"
+                    ],
+                    "is_confident": true
+                }
+            ]
+        }
+    },
+    "debug_info": {
+        "delta": "107.986194ms",
+        "version": "happy_api.720.main.3244488"
+    }
+}
+```
+
+### Flatten/Latest Patient Case
+
+To get only the most recent results for a lab order, use `GET /v1/patient_case/{CASE_ID}/extract/flatten/latest?sets=CBC`.
+
+This endpoint requires a `sets` query parameter listing which sets of fields to include. The only supported set today is `CBC`.
+
+Example usage using curl:
+
+```bash
+curl "https://api.happypathology.com/v1/patient_case/$CASE_ID/extract/flatten/latest?sets=CBC" \
+  -H "Authorization: Bearer $YOUR_SIGNED_TOKEN"
+```
+
+The response has the same shape as the `/extract/flatten` endpoint — each field in `medical_data` maps to an array of `{ values, is_confident }` entries.
+
+:::note[Per-set semantics]
+A `set` (like `CBC`) represents a single lab order. Every measurement in that order shares the same `specimen_reported_date`.
+
+For each requested set, the endpoint:
+
+1. Finds the single most recent test run across all documents that contains any field belonging to that set.
+2. Returns every set field present in that winning test run.
+
+Fields that appear only in older test runs are **intentionally excluded** — they belong to a different (earlier) order.
+:::
+
+:::tip
+If two source documents report the same test on the same date (e.g. the same lab report extracted from two uploads), both contribute — you will see one entry per source in the array for each field.
+:::
+
+Example response:
+
+```json
+{
+    "status": 200,
+    "results": {
+        "status": "complete",
+        "created_timestamp": 1774005780212133159,
+        "updated_timestamp": 1774005849334733262,
+        "medical_data": {
+            "hematocrit": [
+                {
+                    "values": [
+                        {
+                            "value": 44.4,
+                            "measurement_unit": "%",
+                            "range": {
+                                "min": 34.4,
+                                "max": 44.2
+                            }
+                        }
+                    ],
+                    "is_confident": true
+                }
+            ],
+            "hemoglobin": [
+                {
+                    "values": [
+                        {
+                            "value": 14.6,
+                            "measurement_unit": "g/dL",
+                            "range": {
+                                "min": 11.5,
+                                "max": 15.1
+                            }
+                        }
+                    ],
+                    "is_confident": true
+                }
+            ],
+            "specimen_reported_date": [
+                {
+                    "values": [
+                        1753401600
+                    ],
+                    "is_confident": true
+                }
+            ]
+        }
+    },
+    "debug_info": {
+        "delta": "107.986194ms",
+        "version": "happy_api.720.main.3244488"
+    }
+}
+```
 
 
 ## Best Practices
