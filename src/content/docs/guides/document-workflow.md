@@ -401,7 +401,7 @@ curl "https://api.happypathology.com/v1/patient_case/$CASE_ID/extract/flatten?ta
   -H "Authorization: Bearer $YOUR_SIGNED_TOKEN"
 ```
 
-When the case is ready, the response contains a `medical_data` map. Each key maps to an **array** of entries, one per source test/document that contributed values for that field. Every entry has the shape:
+When the case is ready, the response contains a `medical_data` map. Each key maps to an object with the following shape:
 
 | field | type | description |
 |---|---|---|
@@ -422,91 +422,70 @@ Example response:
         "created_timestamp": 1774005780212133159,
         "updated_timestamp": 1774005849334733262,
         "medical_data": {
-            "patient_first_name": [
-                {
-                    "values": [
-                        "Richard",
-                        "Rich"
-                    ],
-                    "is_confident": true
-                }
-            ],
-            "patient_last_name": [
-                {
-                    "values": [
-                        "Smith"
-                    ],
-                    "is_confident": true
-                }
-            ],
-            "patient_id": [
-                {
-                    "values": [
-                        "1234567"
-                    ],
-                    "is_confident": true
-                }
-            ],
-            "hematocrit": [
-                {
-                    "values": [
-                        {
-                            "value": 44.4,
-                            "measurement_unit": "%",
-                            "range": {
-                                "min": 34.4,
-                                "max": 44.2
-                            }
+            "patient_first_name": {
+                "values": [
+                    "Richard",
+                    "Rich"
+                ],
+                "is_confident": true
+            },
+            "patient_last_name": {
+                "values": [
+                    "Smith"
+                ],
+                "is_confident": true
+            },
+            "patient_id": {
+                "values": [
+                    "1234567"
+                ],
+                "is_confident": true
+            },
+            "hematocrit": {
+                "values": [
+                    {
+                        "value": 44.4,
+                        "measurement_unit": "%",
+                        "range": {
+                            "min": 34.4,
+                            "max": 44.2
                         }
-                    ],
-                    "is_confident": true
-                }
-            ],
-            "hemoglobin": [
-                {
-                    "values": [
-                        {
-                            "value": 14.6,
-                            "measurement_unit": "g/dL",
-                            "range": {
-                                "min": 11.5,
-                                "max": 15.1
-                            }
+                    }
+                ],
+                "is_confident": true
+            },
+            "hemoglobin": {
+                "values": [
+                    {
+                        "value": 14.6,
+                        "measurement_unit": "g/dL",
+                        "range": {
+                            "min": 11.5,
+                            "max": 15.1
                         }
-                    ],
-                    "is_confident": true
-                }
-            ],
-            "specimen_collection_date": [
-                {
-                    "values": [
-                        1753401600
-                    ],
-                    "is_confident": false
-                }
-            ],
-            "specimen_ordering_physician": [
-                {
-                    "values": [
-                        "coraline jones, md"
-                    ],
-                    "is_confident": true
-                }
-            ],
-            "specimen_type": [
-                {
-                    "values": [
-                        "blood"
-                    ],
-                    "is_confident": true
-                },
-                {
-                    "values": [
-                        "urine"
-                    ],
-                    "is_confident": true
-                }
-            ]
+                    }
+                ],
+                "is_confident": true
+            },
+            "specimen_collection_date": {
+                "values": [
+                    1753401600
+                ],
+                "is_confident": false
+            },
+            "specimen_ordering_physician": {
+                "values": [
+                    "coraline jones, md"
+                ],
+                "is_confident": true
+            },
+            "specimen_type": {
+                "values": [
+                    "blood",
+                    "urine"
+                ],
+                "is_confident": true
+            }
         }
     },
     "debug_info": {
@@ -529,7 +508,7 @@ curl "https://api.happypathology.com/v1/patient_case/$CASE_ID/extract/flatten/la
   -H "Authorization: Bearer $YOUR_SIGNED_TOKEN"
 ```
 
-The response has the same shape as the `/extract/flatten` endpoint — each field in `medical_data` maps to an array of `{ values, is_confident }` entries.
+The response has the same shape as the `/extract/flatten` endpoint — each field in `medical_data` maps to an object with `{ values, is_confident }` entries.
 
 :::note[Per-set semantics]
 A `set` (like `CBC`) represents a single lab order. Every measurement in that order shares the same `specimen_reported_date`.
@@ -556,44 +535,38 @@ Example response:
         "created_timestamp": 1774005780212133159,
         "updated_timestamp": 1774005849334733262,
         "medical_data": {
-            "hematocrit": [
-                {
-                    "values": [
-                        {
-                            "value": 44.4,
-                            "measurement_unit": "%",
-                            "range": {
-                                "min": 34.4,
-                                "max": 44.2
-                            }
+            "hematocrit": {
+                "values": [
+                    {
+                        "value": 44.4,
+                        "measurement_unit": "%",
+                        "range": {
+                            "min": 34.4,
+                            "max": 44.2
                         }
-                    ],
-                    "is_confident": true
-                }
-            ],
-            "hemoglobin": [
-                {
-                    "values": [
-                        {
-                            "value": 14.6,
-                            "measurement_unit": "g/dL",
-                            "range": {
-                                "min": 11.5,
-                                "max": 15.1
-                            }
+                    }
+                ],
+                "is_confident": true
+            },
+            "hemoglobin": {
+                "values": [
+                    {
+                        "value": 14.6,
+                        "measurement_unit": "g/dL",
+                        "range": {
+                            "min": 11.5,
+                            "max": 15.1
                         }
-                    ],
-                    "is_confident": true
-                }
-            ],
-            "specimen_reported_date": [
-                {
-                    "values": [
-                        1753401600
-                    ],
-                    "is_confident": true
-                }
-            ]
+                    }
+                ],
+                "is_confident": true
+            },
+            "specimen_reported_date": {
+                "values": [
+                    1753401600
+                ],
+                "is_confident": true
+            }
         }
     },
     "debug_info": {
