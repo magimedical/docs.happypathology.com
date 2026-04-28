@@ -12,9 +12,10 @@ The following file types may be uploaded:
 - PNG: `image/png`
 
 
+:::tip
 (PDF only) HappyPathology is able to detect if a pdf document contains multiple cases.
 This feature requires the pdf document to include a specific HappyPathology separator page between each case. Please contact us to get a printable copy of the separator page.
-
+:::
 
 
 ## 4-Step Workflow
@@ -520,7 +521,8 @@ curl "https://api.happypathology.com/v1/patient_case/$CASE_ID/extract/flatten/la
 
 The response has the same shape as the `/extract/flatten` endpoint — each field in `medical_data` maps to an object with `{ values, is_confident }` entries.
 
-:::tip
+
+:::caution
 A document must have a reported date or collected date to be returned in this endpoint. Undated documents are not valid.
 
 If there are documents with overlapping dates and overlapping lab data, this will result in multiple entires appearing in the values field.
