@@ -391,7 +391,7 @@ Sources are automatically deleted after 30 days.
 
 To get an aggregated view of the Case's extracted information as one flat JSON object you can use `GET /v1/patient_case/{CASE_ID}/extract/flatten?tags=XYZ`.
 
-For each field, the flattened response merges all values found across all documents. For example, if the HappyPathology system identified the first name "Bob", "Bobby", and "Robert" on a Case's three documents, the flattened JSON would have patient_first_name: ["Bob", "Bobby", "Robert"].
+For each field, the flattened response merges all values found across all documents. For example, if the HappyPathology system identified the first name "Bob", "Bobby", and "Robert" on a Case's three documents, the flattened JSON would have `patient_first_name: ["Bob", "Bobby", "Robert"]`.
 
 You can filter the response by custom tags (contact HappyPathology team for your custom tags).
 
@@ -408,7 +408,7 @@ When the case is ready, the response contains a `medical_data` map. Each key map
 
 | field | type | description |
 |---|---|---|
-| `values` | array | All extracted values for this field found across all documents. Duplicate values are ignored. (For lab measurements each value is an object with `value`, `measurement_unit`, and `range`.) |
+| `values` | array | All extracted values for this field found across all documents. Duplicate values are ignored. For lab measurements each value is an object with `value`, `measurement_unit`, and `range`. |
 | `is_confident` | boolean | `true` If the service has full confidence in every value in this entry. `false` if any value in this entry was flagged as uncertain. |
 
 Example response:
@@ -505,9 +505,11 @@ Example response:
 
 ### Flatten/Latest Patient Case
 
-To get only the most recent results for a lab order, use `GET /v1/patient_case/{CASE_ID}/extract/flatten/latest?sets=CBC`.
+To get datapoints from a most recent lab test/order, use `GET /v1/patient_case/{CASE_ID}/extract/flatten/latest?sets=CBC`.
 
-This endpoint requires a `sets` query parameter listing which sets of fields to include. The only supported set today is `CBC`.
+For example, if a Case has multiple CBC labs, and you want to find the most recent CBC lab's values, this endpoint will help you.
+
+This endpoint requires a `sets` query parameter, which defines a set of datapoints to search for. The only supported set today is `CBC`.
 
 Example usage using curl:
 
@@ -518,19 +520,10 @@ curl "https://api.happypathology.com/v1/patient_case/$CASE_ID/extract/flatten/la
 
 The response has the same shape as the `/extract/flatten` endpoint — each field in `medical_data` maps to an object with `{ values, is_confident }` entries.
 
-:::note[Per-set semantics]
-A `set` (like `CBC`) represents a single lab order. Every measurement in that order shares the same `specimen_reported_date`.
-
-For each requested set, the endpoint:
-
-1. Finds the single most recent test run across all documents that contains any field belonging to that set.
-2. Returns every set field present in that winning test run.
-
-Fields that appear only in older test runs are **intentionally excluded** — they belong to a different (earlier) order.
-:::
-
 :::tip
-If two source documents report the same test on the same date (e.g. the same lab report extracted from two uploads), both contribute — you will see one entry per source in the array for each field.
+A document must have a reported date or collected date to be returned in this endpoint. Undated documents are not valid.
+
+If there are documents with overlapping dates and overlapping lab data, this will result in multiple entires appearing in the values field.
 :::
 
 Example response:
