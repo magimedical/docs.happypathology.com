@@ -251,7 +251,7 @@ curl https://api.happypathology.com/v1/patient_case/$CASE_ID/extract \
   -H "Authorization: Bearer $YOUR_SIGNED_TOKEN"
 ```
 
-When ready, the response contains the structured medical data under `results.medical_data`:
+When ready, the response contains the [structured medical data](https://docs.happypathology.com/guides/data-model/#medical-document-medical_data) under `results.medical_data`:
 
 ```json
 {
@@ -325,7 +325,7 @@ For example a document can be:
 - a packet that contains patient medical history.
 - an order form sent to the lab.
 
-Each document is processed and HappyPathology returns the structured data under `medical_data`.
+Each document is processed and HappyPathology returns the [structured data](https://docs.happypathology.com/guides/data-model/#medical-document-medical_data) under `medical_data`.
 
 ## Other Endpoints
 
