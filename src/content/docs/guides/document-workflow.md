@@ -262,7 +262,6 @@ When ready, the response contains the structured medical data under `results.med
         "updated_timestamp": 1774005849334733262,
         "id": "01KM5FQZMYKG2DA4FV2KPFXSZ2",
         "source_id": "01KM5FQY0ZTTT0JWTQEDTJPT89",
-        "case_version": 1,
         "expiration_unix_time": 1776597778,
         "medical_data": {
             "01KM5FT37PKPMKMZD60FS4DQCM": {
@@ -390,9 +389,13 @@ Sources are automatically deleted after 30 days.
 
 ### Flattened Patient Case
 
-To get all the extracted information for a Patient Case as one flat JSON object you can use `GET /v1/patient_case/{CASE_ID}/extract/flatten?tags=XYZ`.
+To get an aggregated view of the Case's extracted information as one flat JSON object you can use `GET /v1/patient_case/{CASE_ID}/extract/flatten?tags=XYZ`.
 
-You can filter the response by tags on the source documents. Provide zero, one, or multiple tags separated by commas, for example `tags=XYZ,ABC`. When multiple tags are provided, documents that have **any** of the specified tags are included.
+For each field, the flattened response merges all values found across all documents. For example, if the HappyPathology system identified the first name "Bob", "Bobby", and "Robert" on a Case's three documents, the flattened JSON would have patient_first_name: ["Bob", "Bobby", "Robert"].
+
+You can filter the response by custom tags (contact HappyPathology team for your custom tags).
+
+Provide zero, one, or multiple tags separated by commas, for example `tags=XYZ,ABC`. When multiple tags are provided, documents that have **any** of the specified tags are included.
 
 Example usage using curl:
 
@@ -405,12 +408,8 @@ When the case is ready, the response contains a `medical_data` map. Each key map
 
 | field | type | description |
 |---|---|---|
-| `values` | array | Extracted values from a single source test. For lab measurements each value is an object with `value`, `measurement_unit`, and `range`. |
-| `is_confident` | boolean | `true` if the service has full confidence in every value in this entry. `false` if any value in this entry was flagged as uncertain (e.g. disagreement between extractors, or the user edited it). |
-
-:::note
-The array wrapper exists because the same field can appear in multiple source documents or tests. For example, if two uploaded reports each mention the patient's first name, `patient_first_name` will contain two entries — one per source.
-:::
+| `values` | array | All extracted values for this field found across all documents. Duplicate values are ignored. (For lab measurements each value is an object with `value`, `measurement_unit`, and `range`.) |
+| `is_confident` | boolean | `true` If the service has full confidence in every value in this entry. `false` if any value in this entry was flagged as uncertain. |
 
 Example response:
 
@@ -450,6 +449,14 @@ Example response:
                             "min": 34.4,
                             "max": 44.2
                         }
+                    },
+                    {
+                        "value": 40.1,
+                        "measurement_unit": "%",
+                        "range": {
+                            "min": 34.4,
+                            "max": 44.2
+                        }
                     }
                 ],
                 "is_confident": true
@@ -469,7 +476,8 @@ Example response:
             },
             "specimen_collection_date": {
                 "values": [
-                    1753401600
+                    1753401600,
+                    1753311400,
                 ],
                 "is_confident": false
             },
