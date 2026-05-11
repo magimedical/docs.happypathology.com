@@ -294,6 +294,7 @@ This is a comprehensive list of fields that are extracted and placed into the `m
 | `specimen_ordering_physician` | `string` | |
 | `specimen_performing_lab` | `string` | |
 | `specimen_collection_date` | `number` | The date the specimen was extracted from the Patient (Unix seconds) |
+| `specimen_ordered_date` | `number` | The date the test was ordered for this specimen (Unix seconds) |
 | `specimen_received_date` | `number` | The date the specimen was received by the lab (Unix seconds) |
 | `specimen_reported_date` | `number` | The date the test was performed on the specimen (Unix seconds) |
 
