@@ -101,7 +101,12 @@ Represents a batch of uploaded files being processed into cases.
 
 
 :::caution
-A Source can have a maximum of 100 cases.
+File Size Limiations:
+
+One source can have a maximum of 100 cases.
+
+One case can have a maximum of 50 pages.
+
 :::
 
 ### Source status
