@@ -134,7 +134,8 @@ Represents a single patient's case extracted from a source's document.
 | `created_timestamp` | `number` | When this Case was originally created (Unix nanoseconds)  |
 | `updated_timestamp` | `number` | When this Case was last modified (Unix nanoseconds)  |
 | `expiration_unix_time` | `number` | When this case and all its related data will be deleted (Unix seconds) |
-| `secure_file_urls` | `map[string]string` | A map of temporary URLs to download the files that were used to create this case. The URLs expire after 5 minutes. |
+| `secure_source_file_urls` | `map[string]string` | A map of temporary URLs to download the original source files (uploaded by the user) that were used to generate this case. The URLs expire after 5 minutes. |
+| `secure_file_urls` | `map[string]string` | A map of temporary URLs to download each medical documents' files. The URLs expire after 5 minutes. |
 | `medical_data` | `map[string]object` | Extracted medical documents — see [Medical Document](#medical-document-medical_data) |
 
 :::caution
