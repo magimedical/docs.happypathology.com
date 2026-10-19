@@ -7,6 +7,9 @@ import catppuccin from 'starlight-theme-catppuccin';
 // https://astro.build/config
 export default defineConfig({
 	site: 'https://docs.happypathology.com',
+	redirects: {
+		'/support': '/resources/support/',
+	},
 	integrations: [
 		starlight({
 			title: 'HappyPathology Docs',
@@ -18,10 +21,10 @@ export default defineConfig({
 			],
 			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/magimedical' }],
 			sidebar: [
-				 {
-				 	label: 'Guides',
-				 	items: [
-				 		{ label: 'Getting Started', slug: 'guides/getting-started' },
+				{
+					label: 'Guides',
+					items: [
+						{ label: 'Getting Started', slug: 'guides/getting-started' },
 						{ label: 'Check Connectivity', slug: 'guides/check-connectivity' },
 						{ label: 'Auth Model', slug: 'guides/auth-model' },
 						{ label: 'Create Signing Key Pairs', slug: 'guides/create-signing-key-pairs' },
@@ -31,9 +34,9 @@ export default defineConfig({
 						{ label: 'Document Workflow', slug: 'guides/document-workflow' },
 						{ label: 'Data Models', slug: 'guides/data-model' },
 
-				 		// { label: 'CBC Workflow', slug: 'guides/cbc-workflow' },
-				 	],
-				 },
+						// { label: 'CBC Workflow', slug: 'guides/cbc-workflow' },
+					],
+				},
 				// {
 				// 	label: 'Overview',
 				// 	items: [
@@ -55,6 +58,7 @@ export default defineConfig({
 					label: 'Resources',
 					items: [
 						{ label: 'Status Page', slug: 'resources/status-page' },
+						{ label: 'Support', slug: 'resources/support' },
 						// { label: 'Sample Code', slug: 'resources/sample-code' },
 					],
 				},

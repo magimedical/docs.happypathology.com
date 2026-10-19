@@ -46,7 +46,7 @@ It is important to make sure the whitespaces do not change during this process. 
 
 
 
-5. Send the public keys to us via email or through the support chat.  As the name implies, the public key is public and does not need to be kept secret or treated as sensitive information.
+5. Send the public keys to us via email or through the support channel.  As the name implies, the public key is public and does not need to be kept secret or treated as sensitive information.
 
 ```bash
 # on macos
