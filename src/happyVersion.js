@@ -1,6 +1,6 @@
 export class happyVersion {
 	String() {
-		return "happy.47.main.eae5717"
+		return "happy.48.main.7e37c77"
 	}
 }
 export default happyVersion;
